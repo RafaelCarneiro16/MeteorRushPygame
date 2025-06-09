@@ -1,11 +1,11 @@
 import pygame
-from codigo.tela import Tela
-from codigo.jogador import Jogador
+from tela import Tela
+from jogador import Jogador
 
 class Tiro(pygame.sprite.Sprite):
     def __init__(self, posição : tuple, grupo):
         super().__init__(grupo)
-        self.__image = pygame.image.load(rf"C:\jogotrab\imagens\laser.png").convert_alpha()
+        self.__image = pygame.image.load(rf"C:\MeusGits\MeteorRushPyGame\imagens\laser.png").convert_alpha()
         self.__rect = self.__image.get_rect(center = (posição))
         
     @property

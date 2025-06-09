@@ -1,10 +1,10 @@
 import pygame
-from codigo.tela import Tela
+from tela import Tela
 
 class Jogador(pygame.sprite.Sprite):
     def __init__(self, group, tela : Tela):
         super().__init__(group)
-        self.__image = pygame.image.load(rf"C:\jogotrab\imagens\nave.gif").convert_alpha()
+        self.__image = pygame.image.load(rf"C:\MeusGits\MeteorRushPyGame\imagens\nave.gif").convert_alpha()
         self.__rect = self.__image.get_rect(center = (tela.largura/2, tela.altura/2))
 
     @property
