@@ -5,7 +5,7 @@ from tela import Tela
 class Meteoro(pygame.sprite.Sprite):
     def __init__(self, x, grupo):
         super().__init__(grupo)
-        self.original_image = pygame.image.load(rf"C:\MeusGits\MeteorRushPyGame\imagens\meteoro.png").convert_alpha()
+        self.original_image = pygame.image.load(rf"C:\GitHub\Jogo\imagens\meteoro.png").convert_alpha()
         tamanho_imagem = random.choice([0.94, 1.15, 1.25])
         self.__image = pygame.transform.rotozoom(self.original_image, random.randint(0, 360), tamanho_imagem)
         self.__rect = self.__image.get_rect(center = (x, -50))

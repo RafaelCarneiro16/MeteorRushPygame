@@ -13,7 +13,7 @@ pontuacao = 0
 font = pygame.font.SysFont(None, 36)
 
 tela = Tela(800,600)
-imagem_fundo = pygame.image.load(rf"C:\MeusGits\MeteorRushPyGame\imagens\fundo.png").convert_alpha()
+imagem_fundo = pygame.image.load(rf"C:\GitHub\Jogo\imagens\fundo.png").convert_alpha()
 rect_fundo = imagem_fundo.get_rect(center = (400,300))
 
 sprites = pygame.sprite.Group()
