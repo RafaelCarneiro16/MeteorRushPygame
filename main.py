@@ -1,14 +1,16 @@
 import pygame
-import random 
+import random
 from jogador import Jogador
 from tela import Tela
 from tiro import Tiro
 from meteoro import Meteoro
 
-
 pygame.init()
 
 clock = pygame.time.Clock()
+
+pontuacao = 0 
+font = pygame.font.SysFont(None, 36)
 
 tela = Tela(800,600)
 imagem_fundo = pygame.image.load(rf"C:\jogotrab\imagens\fundo.png").convert_alpha()
@@ -25,32 +27,42 @@ pygame.time.set_timer(evento_meteoro, 250)
 
 rodando = True
 
+# Loop do Jogo
 while rodando:
     for evento in pygame.event.get():
         if evento.type == pygame.QUIT:
             rodando = False
 
+        # Cria tiro
         if evento.type == pygame.KEYDOWN and evento.key == pygame.K_SPACE:
            novo_tiro = Tiro((jogador.rect.midtop), tiros)
 
+        # Gera meteoros
         if evento.type == evento_meteoro:
             x = random.randint(0, tela.largura - 50)
             novo_meteoro = Meteoro(x , meteoros)   
     
-    pygame.sprite.groupcollide(tiros, meteoros, True, True, pygame.sprite.collide_rect)
+    # Colisão
     pygame.sprite.groupcollide(sprites, meteoros, False, True, pygame.sprite.collide_rect)
+    colisao = pygame.sprite.groupcollide(tiros, meteoros, True, True)
 
+    for tiro, meteoros_acert in colisao.items():
+        for meteoro in meteoros_acert:
+            pontuacao+= meteoro.pontos
 
-    tela.display.fill('midnightblue')
-    tela.display.blit(imagem_fundo , rect_fundo)
-
+    # Atualização da posição
     sprites.update(tela)
     tiros.update()
     meteoros.update()
-
+    
+    # Desenhos
+    tela.display.blit(imagem_fundo , rect_fundo)
     sprites.draw(tela.display)
     tiros.draw(tela.display)
     meteoros.draw(tela.display)
+
+    texto_pontuacao = font.render(f"Pontuação: {pontuacao}", True, (255, 255, 255))
+    tela.display.blit(texto_pontuacao, (10, 10))
 
     pygame.display.update()
     clock.tick(60)
