@@ -1,5 +1,5 @@
 import pygame
-from tela import Tela
+from codigo.tela import Tela
 
 class Jogador(pygame.sprite.Sprite):
     def __init__(self, group, tela : Tela):

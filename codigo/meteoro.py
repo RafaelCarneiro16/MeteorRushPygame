@@ -1,6 +1,6 @@
 import pygame 
 import random
-from tela import Tela
+from codigo.tela import Tela
 
 class Meteoro(pygame.sprite.Sprite):
     def __init__(self, x, grupo):

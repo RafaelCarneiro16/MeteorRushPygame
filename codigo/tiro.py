@@ -1,6 +1,6 @@
 import pygame
-from tela import Tela
-from jogador import Jogador
+from codigo.tela import Tela
+from codigo.jogador import Jogador
 
 class Tiro(pygame.sprite.Sprite):
     def __init__(self, posição : tuple, grupo):

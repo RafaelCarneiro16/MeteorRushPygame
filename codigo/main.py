@@ -1,9 +1,9 @@
 import pygame
 import random
-from jogador import Jogador
-from tela import Tela
-from tiro import Tiro
-from meteoro import Meteoro
+from codigo.jogador import Jogador
+from codigo.tela import Tela
+from codigo.tiro import Tiro
+from codigo.meteoro import Meteoro
 
 pygame.init()
 
