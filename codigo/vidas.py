@@ -22,3 +22,4 @@ class Vidas(pygame.sprite.Sprite):
     @rect.setter
     def rect(self, novo):
         self.__rect = novo
+
