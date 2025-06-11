@@ -4,6 +4,7 @@ from jogador import Jogador
 from tela import Tela
 from tiro import Tiro
 from meteoro import Meteoro
+from vidas import Vidas
 
 pygame.init()
 
@@ -21,6 +22,12 @@ jogador = Jogador(sprites, tela)
 
 meteoros = pygame.sprite.Group()
 tiros = pygame.sprite.Group()
+coracoes = pygame.sprite.Group()
+
+
+for i in range(3):
+    x = tela.largura - (i * (50 + 10))
+    nova_vida = Vidas(coracoes, x)
 
 evento_meteoro = pygame.USEREVENT + 1
 pygame.time.set_timer(evento_meteoro, 250)
@@ -49,17 +56,20 @@ while rodando:
     for tiro, meteoros_acert in colisao.items():
         for meteoro in meteoros_acert:
             pontuacao+= meteoro.pontos
+            
 
     # Atualização da posição
     sprites.update(tela)
     tiros.update()
     meteoros.update()
-    
+    coracoes.update()
+
     # Desenhos
     tela.display.blit(imagem_fundo , rect_fundo)
     sprites.draw(tela.display)
     tiros.draw(tela.display)
     meteoros.draw(tela.display)
+    coracoes.draw(tela.display)
 
     texto_pontuacao = font.render(f"Pontuação: {pontuacao}", True, (255, 255, 255))
     tela.display.blit(texto_pontuacao, (10, 10))
