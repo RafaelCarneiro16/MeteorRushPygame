@@ -75,13 +75,14 @@ def novo_jogo():
                 pygame.quit()
                 exit()
 
-            elif evento.type == pygame.KEYDOWN :
-                # Cria tiro
-                if evento.key == pygame.K_SPACE:
-                    novo_tiro = Tiro((jogador.rect.midtop), tiros)
+            elif evento.type == pygame.KEYDOWN :  
                 # Volta pro menu
                 if evento.key == pygame.K_ESCAPE:
                     return 
+                # Cria tiro
+                elif evento.key == pygame.key.get_pressed and evento.key == pygame.K_SPACE:
+                    novo_tiro = Tiro((jogador.rect.midtop), tiros)
+                    
 
             # Gera meteoros
             elif evento.type == evento_meteoro:
@@ -96,8 +97,9 @@ def novo_jogo():
            if lista_vidas:
               vida_perdida = lista_vidas.pop()
               vida_perdida.kill()
-           else:
-              rodando = False 
+              
+              if not lista_vidas: 
+                 rodando = False 
 
         colisao = pygame.sprite.groupcollide(tiros, meteoros, True, True)
 

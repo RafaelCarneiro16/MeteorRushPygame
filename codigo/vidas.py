@@ -23,3 +23,4 @@ class Vidas(pygame.sprite.Sprite):
     def rect(self, novo):
         self.__rect = novo
 
+    
