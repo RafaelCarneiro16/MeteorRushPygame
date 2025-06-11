@@ -4,8 +4,8 @@ from tela import Tela
 class Jogador(pygame.sprite.Sprite):
     def __init__(self, group, tela : Tela):
         super().__init__(group)
-        self.__image = pygame.image.load(rf"C:\jogotrab\imagens\nave.gif").convert_alpha()
-        self.__rect = self.__image.get_frect(center = (tela.largura/2, tela.altura/2))
+        self.__image = pygame.image.load(rf"C:\GitHub\Jogo\imagens\nave.gif").convert_alpha()
+        self.__rect = self.__image.get_rect(center = (tela.largura/2, tela.altura/2))
 
     @property
     def image(self):
