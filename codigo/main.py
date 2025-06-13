@@ -11,7 +11,7 @@ from jogo import Jogo
 
 pygame.init()
 
-tela = Tela(800, 600, 'C:/GitHub/MeteorRushPygame/imagens/fundo.png')
+tela = Tela(800, 600, 'C:/GitHub/Jogo/imagens/fundo.png')
 
 # Grupos 
 grupo_vidas = pygame.sprite.Group()

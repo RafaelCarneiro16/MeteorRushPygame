@@ -10,7 +10,7 @@ class Menu():
         self.__tela = tela  
         self.__jogo = jogo
         self.__grupo_botoes = grupo_botoes
-        self.__logo_jogo = pygame.image.load('C:\GitHub\MeteorRushPygame\imagens\icone_nome_jogo.png').convert_alpha()
+        self.__logo_jogo = pygame.image.load('C:\GitHub\Jogo\imagens\icone_nome_jogo.png').convert_alpha()
         self.__logo_rect = self.__logo_jogo.get_rect(center = (400, 125))
 
     @property
@@ -50,10 +50,10 @@ class Menu():
 
 
     def rodando_menu(self):
-        botao_novojogo = Botao(self.__grupo_botoes, 'C:/GitHub/MeteorRushPygame/imagens/bt_novo_jogo.png' , (400, 200))
+        botao_novojogo = Botao(self.__grupo_botoes, 'C:/GitHub/Jogo/imagens/bt_novo_jogo.png' , (400, 200))
         botao_continuar = None
-        botao_ranking = Botao(self.__grupo_botoes, 'C:/GitHub/MeteorRushPygame/imagens/bt_ranking.png', (400, 320))
-        botao_som =  Botao(self.__grupo_botoes, 'C:/GitHub/MeteorRushPygame/imagens/bt_som.png', (400, 442))
+        botao_ranking = Botao(self.__grupo_botoes, 'C:/GitHub/Jogo/imagens/bt_ranking.png', (400, 320))
+        botao_som =  Botao(self.__grupo_botoes, 'C:/GitHub/Jogo/imagens/bt_som.png', (400, 442))
 
         rodando_menu = True
 
