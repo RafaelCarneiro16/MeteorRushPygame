@@ -3,17 +3,24 @@ import pygame
 class Botao(pygame.sprite.Sprite):
     def __init__(self, grupo, caminho_imagem, posicao : tuple):
         super().__init__(grupo)
-        self.__image = pygame.image.load(rf'caminho_imagem').convert_alpha
+        self.__image = pygame.image.load(rf'{caminho_imagem}').convert_alpha()
         self.__rect = self.__image.get_rect(center = (posicao))
 
     @property
-    def imagem(self):
-        return self.__imagem
+    def image(self):
+        return self.__image
     
-    @imagem.setter
-    def imagem(self, nova_imagem):
-        self.__imagem =  nova_imagem
+    @image.setter
+    def image(self, nova_imagem):
+        self.__image =  nova_imagem
 
+    @property
+    def rect(self):
+        return self.__rect
+    
+    @rect.setter
+    def rect(self, novo):
+        self.__rect =  novo
     @property
     def posicao(self):
         return self.__posicao
@@ -22,10 +29,5 @@ class Botao(pygame.sprite.Sprite):
     def posicao(self, nova_posicao):
         self.__posicao =  nova_posicao
 
-    def conferirclique(self, mouse):
-        if mouse.button == 1:
-            if self.rect.collidepoint(mouse.pos):
-                return True
-                
         return False
 

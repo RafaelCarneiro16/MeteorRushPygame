@@ -3,7 +3,7 @@ import pygame
 class Vidas(pygame.sprite.Sprite):
     def __init__(self, grupo, posx = int):
         super().__init__(grupo)
-        self.__imagem = pygame.image.load(rf'C:\GitHub\Jogo\imagens\coracao.png').convert_alpha()
+        self.__imagem = pygame.image.load(rf'C:\GitHub\MeteorRushPygame\imagens\vida.png').convert_alpha()
         self.__image = pygame.transform.scale(self.__imagem, (50, 50))
         self.__rect = self.__image.get_rect(topright = (posx, 0))
 
@@ -22,5 +22,6 @@ class Vidas(pygame.sprite.Sprite):
     @rect.setter
     def rect(self, novo):
         self.__rect = novo
+        
 
     
