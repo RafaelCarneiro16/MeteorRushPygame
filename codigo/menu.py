@@ -2,7 +2,7 @@ import pygame
 from tela import Tela
 from jogo import Jogo
 from botao import Botao
-
+from som import Som
 
 class Menu():
     def __init__(self, jogo: Jogo, tela: Tela, grupo_botoes: pygame.sprite.Group):
@@ -12,6 +12,7 @@ class Menu():
         self.__grupo_botoes = grupo_botoes
         self.__logo_jogo = pygame.image.load('C:\GitHub\Jogo\imagens\icone_nome_jogo.png').convert_alpha()
         self.__logo_rect = self.__logo_jogo.get_rect(center = (400, 125))
+        self.__som = Som()
 
     @property
     def clock(self):
@@ -54,12 +55,14 @@ class Menu():
         botao_continuar = None
         botao_ranking = Botao(self.__grupo_botoes, 'C:/GitHub/Jogo/imagens/bt_ranking.png', (400, 320))
         botao_som =  Botao(self.__grupo_botoes, 'C:/GitHub/Jogo/imagens/bt_som.png', (400, 442))
-
+        self.__som.tocar_musica(r"C:\GitHub\Jogo\sons\musica_menu.wav")
+        
         rodando_menu = True
 
         while rodando_menu:
             mouse_pos = pygame.mouse.get_pos()
             mouse_botao = pygame.mouse.get_pressed()
+            
 
             for evento in pygame.event.get():
                 if evento.type == pygame.QUIT:
@@ -74,6 +77,8 @@ class Menu():
 
             if mouse_botao[0]:
                 if botao_novojogo.rect.collidepoint(mouse_pos):
+                   self.__som.tocar_efeitos(r"C:\GitHub\Jogo\sons\clique_inicio.wav")
+                   self.__som.parar_musica()
                    self.__jogo.novo_jogo()
                    rodando_menu = False
         
