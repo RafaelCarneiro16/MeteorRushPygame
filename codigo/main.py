@@ -33,7 +33,7 @@ jogo = Jogo(
     som=grupo_sons
 )
 
-menu = Menu(jogo, tela, grupo_botoes)
+menu = Menu(jogo, tela, grupo_botoes, grupo_sons)
 
 while True:
     menu.rodando_menu()
