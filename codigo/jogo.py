@@ -40,9 +40,14 @@ class Jogo():
         evento_meteoro = pygame.USEREVENT + 1
         pygame.time.set_timer(evento_meteoro, 250)
 
+        # Posições do fundo animado
+        y1 = 0
+        y2 = -self.__tela.altura
+        velocidade_fundo = 2
+
         rodando = True
 
-        #Som
+        # Som
         self.__som.tocar_musica(r"C:\GitHub\Jogo\sons\musica_jogo.wav")
 
         while rodando:
@@ -57,11 +62,19 @@ class Jogo():
                     elif evento.key == pygame.K_SPACE:
                         Tiro(self.__jogador.rect.midtop, self.__grupo_tiros)
                         self.__som.tocar_efeitos(r"C:\GitHub\Jogo\sons\laser.wav")
-                        
 
                 elif evento.type == evento_meteoro:
                     x = random.randint(0, self.__tela.largura - 50)
                     Meteoro(x, self.__grupo_meteoros)
+
+            # Atualizar posição do fundo
+            y1 += velocidade_fundo
+            y2 += velocidade_fundo
+
+            if y1 >= self.__tela.altura:
+                y1 = -self.__tela.altura
+            if y2 >= self.__tela.altura:
+                y2 = -self.__tela.altura
 
             # Colisões
             colisao_jogador = pygame.sprite.spritecollide(self.__jogador, self.__grupo_meteoros, True)
@@ -81,15 +94,17 @@ class Jogo():
                     pontuacao += meteoro.pontos
                     self.__som.tocar_efeitos(r"C:\GitHub\Jogo\sons\explosion.wav")
 
-           
             # Atualizações
             self.__grupo_jogador.update(self.__tela)
             self.__grupo_tiros.update()
             self.__grupo_meteoros.update()
             self.__grupo_vidas.update()
 
-            # Desenhos
-            self.__tela.display.blit(self.__tela.imagem_fundo, self.__tela.rect_fundo)
+            # Desenhar fundo com rolagem
+            self.__tela.display.blit(self.__tela.imagem_fundo, (0, y1))
+            self.__tela.display.blit(self.__tela.imagem_fundo, (0, y2))
+
+            # Desenhar sprites e HUD
             self.__grupo_jogador.draw(self.__tela.display)
             self.__grupo_tiros.draw(self.__tela.display)
             self.__grupo_meteoros.draw(self.__tela.display)
