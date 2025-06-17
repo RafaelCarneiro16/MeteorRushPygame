@@ -6,10 +6,14 @@ from tiro import Tiro
 from meteoro import Meteoro
 from vidas import Vidas
 from som import Som
+from meteorodourado import Meteoro_Dourado
+from botao import Botao
+
 
 class Jogo():
     def __init__(self, tela: Tela, jogador: Jogador, grupo_jogador: pygame.sprite.GroupSingle,
-                 vidas: pygame.sprite.Group, meteoro: pygame.sprite.Group, tiro: pygame.sprite.Group, som: Som):
+                 vidas: pygame.sprite.Group, meteoro: pygame.sprite.Group, tiro: pygame.sprite.Group, som: Som,
+                 meteoros_dourados : pygame.sprite.Group):
         
         self.__tela = tela
         self.__jogador = jogador
@@ -19,26 +23,107 @@ class Jogo():
         self.__grupo_tiros = tiro
         self.__clock = pygame.time.Clock()
         self.__som = som
+        self.__grupo_meteoros_dourados = meteoros_dourados
+
+    #region Setters e Getters
+    @property
+    def tela(self):
+        return self.__tela
+
+    @tela.setter
+    def tela(self, value):
+        self.__tela = value
+
+    @property
+    def jogador(self):
+        return self.__jogador
+
+    @jogador.setter
+    def jogador(self, value):
+        self.__jogador = value
+
+    @property
+    def grupo_jogador(self):
+        return self.__grupo_jogador
+
+    @grupo_jogador.setter
+    def grupo_jogador(self, value):
+        self.__grupo_jogador = value
+
+    @property
+    def grupo_vidas(self):
+        return self.__grupo_vidas
+
+    @grupo_vidas.setter
+    def grupo_vidas(self, value):
+        self.__grupo_vidas = value
+
+    @property
+    def grupo_meteoros(self):
+        return self.__grupo_meteoros
+
+    @grupo_meteoros.setter
+    def grupo_meteoros(self, value):
+        self.__grupo_meteoros = value
+
+    @property
+    def grupo_tiros(self):
+        return self.__grupo_tiros
+
+    @grupo_tiros.setter
+    def grupo_tiros(self, value):
+        self.__grupo_tiros = value
+
+    @property
+    def clock(self):
+        return self.__clock
+
+    @clock.setter
+    def clock(self, value):
+        self.__clock = value
+
+    @property
+    def som(self):
+        return self.__som
+
+    @som.setter
+    def som(self, value):
+        self.__som = value
+
+    @property
+    def grupo_meteoros_dourados(self):
+        return self.__grupo_meteoros_dourados
+
+    @grupo_meteoros_dourados.setter
+    def grupo_meteoros_dourados(self, value):
+        self.__grupo_meteoros_dourados = value
+    #endregion
 
     def novo_jogo(self):
+
+        self.grupo_vidas.empty()
+        self.grupo_meteoros.empty()
+        self.grupo_tiros.empty()
+        self.grupo_meteoros_dourados.empty()
         
-        self.__grupo_vidas.empty()
-        self.__grupo_meteoros.empty()
-        self.__grupo_tiros.empty()
+        grupo_pause = pygame.sprite.GroupSingle()
+        botao_pause = Botao(grupo_pause, r'C:\GitHub\Jogo\imagens\pause.png', (60, 560))
 
         lista_vidas = []
 
         # Cria vidas
         for i in range(3):
-            x = self.__tela.largura - (i * (40+5))
-            vida = Vidas(self.__grupo_vidas, x)
+            x = self.tela.largura - (i * (40+5))
+            vida = Vidas(self.grupo_vidas, x)
             lista_vidas.append(vida)
 
         pontuacao = 0
-        font = pygame.font.SysFont(None, 36)
+        font = pygame.font.Font(r'C:\GitHub\Jogo\fonte.ttf', 24)
 
         evento_meteoro = pygame.USEREVENT + 1
+        evento_meteoro_dourado = pygame.USEREVENT + 2
         pygame.time.set_timer(evento_meteoro, 250)
+        pygame.time.set_timer(evento_meteoro_dourado, 2000)
 
         # Posições do fundo animado
         y1 = 0
@@ -48,9 +133,12 @@ class Jogo():
         rodando = True
 
         # Som
-        self.__som.tocar_musica(r"C:\GitHub\Jogo\sons\musica_jogo.wav")
+        self.__som.tocar_musica(rf"C:\GitHub\Jogo\sons\musica_jogo.wav")
 
         while rodando:
+            mouse_pos = pygame.mouse.get_pos()
+            mouse_botao = pygame.mouse.get_pressed()
+
             for evento in pygame.event.get():
                 if evento.type == pygame.QUIT:
                     pygame.quit()
@@ -59,59 +147,134 @@ class Jogo():
                 elif evento.type == pygame.KEYDOWN:
                     if evento.key == pygame.K_ESCAPE:
                         return
+                    
                     elif evento.key == pygame.K_SPACE:
-                        Tiro(self.__jogador.rect.midtop, self.__grupo_tiros)
-                        self.__som.tocar_efeitos(r"C:\GitHub\Jogo\sons\laser.wav")
+                        Tiro(self.jogador.rect.midtop, self.grupo_tiros)
+                        self.som.tocar_efeitos(rf"C:\GitHub\Jogo\sons\laser.wav")
 
                 elif evento.type == evento_meteoro:
-                    x = random.randint(0, self.__tela.largura - 50)
-                    Meteoro(x, self.__grupo_meteoros)
+                    x = random.randint(0, self.tela.largura - 50)
+                    Meteoro(x, self.grupo_meteoros)
+
+                elif evento.type == evento_meteoro_dourado:
+                    x = random.randint(0, self.tela.largura - 50)
+                    Meteoro_Dourado(x, self.grupo_meteoros_dourados)
+
+            if mouse_botao[0]:
+                if botao_pause.rect.collidepoint(mouse_pos):
+                    resultado = self.pause()
+                    if not resultado:
+                       return      
+   
 
             # Atualizar posição do fundo
             y1 += velocidade_fundo
             y2 += velocidade_fundo
 
-            if y1 >= self.__tela.altura:
-                y1 = -self.__tela.altura
-            if y2 >= self.__tela.altura:
-                y2 = -self.__tela.altura
+            if y1 >= self.tela.altura:
+                y1 = -self.tela.altura
+            if y2 >= self.tela.altura:
+                y2 = -self.tela.altura
 
             # Colisões
-            colisao_jogador = pygame.sprite.spritecollide(self.__jogador, self.__grupo_meteoros, True)
-            if colisao_jogador:
-                self.__som.tocar_efeitos(r"C:\GitHub\Jogo\sons\hit.wav")
+            colisao_jogador_m = pygame.sprite.spritecollide(self.jogador, self.grupo_meteoros, True)
+            colisao_jogador_md = pygame.sprite.spritecollide(self.jogador, self.grupo_meteoros_dourados, True)
+
+            if colisao_jogador_m or colisao_jogador_md:
+                self.som.tocar_efeitos(r"C:\GitHub\Jogo\sons\hit.wav")
                 if lista_vidas:
                     vida_perdida = lista_vidas.pop()
                     vida_perdida.kill()
                     if not lista_vidas: 
-                        self.__som.parar_musica()
-                        self.__som.tocar_efeitos(r"C:\GitHub\Jogo\sons\game_over_efeito.wav")
+                        self.som.parar_musica()
+                        self.som.tocar_efeitos(r"C:\GitHub\Jogo\sons\game_over_efeito.wav")
                         rodando = False
 
-            colisao = pygame.sprite.groupcollide(self.__grupo_tiros, self.__grupo_meteoros, True, True)
-            for tiros, meteoros_acertados in colisao.items():
+            colisao_m = pygame.sprite.groupcollide(self.grupo_tiros, self.grupo_meteoros, True, True)
+            for tiros, meteoros_acertados in colisao_m.items():
                 for meteoro in meteoros_acertados:
                     pontuacao += meteoro.pontos
-                    self.__som.tocar_efeitos(r"C:\GitHub\Jogo\sons\explosion.wav")
+                    self.som.tocar_efeitos(r"C:\GitHub\Jogo\sons\explosion.wav")
+
+            colisao_md = pygame.sprite.groupcollide(self.__grupo_tiros, self.__grupo_meteoros_dourados, True, True)
+            for tiros, meteoros_D_acertados in colisao_md.items():
+                for meteoros_dourados in meteoros_D_acertados:
+                    pontuacao += meteoros_dourados.pontos
+                    self.som.tocar_efeitos(r"C:\GitHub\Jogo\sons\explosion.wav")
+
+
 
             # Atualizações
-            self.__grupo_jogador.update(self.__tela)
-            self.__grupo_tiros.update()
-            self.__grupo_meteoros.update()
-            self.__grupo_vidas.update()
+            self.grupo_jogador.update(self.__tela)
+            self.grupo_tiros.update()
+            self.grupo_meteoros.update()
+            self.grupo_vidas.update()
+            self.grupo_meteoros_dourados.update()
+            grupo_pause.update()
 
             # Desenhar fundo com rolagem
-            self.__tela.display.blit(self.__tela.imagem_fundo, (0, y1))
-            self.__tela.display.blit(self.__tela.imagem_fundo, (0, y2))
+            self.tela.display.blit(self.tela.imagem_fundo, (0, y1))
+            self.tela.display.blit(self.tela.imagem_fundo, (0, y2))
 
-            # Desenhar sprites e HUD
-            self.__grupo_jogador.draw(self.__tela.display)
-            self.__grupo_tiros.draw(self.__tela.display)
-            self.__grupo_meteoros.draw(self.__tela.display)
-            self.__grupo_vidas.draw(self.__tela.display)
+            # Desenhos
+            self.grupo_jogador.draw(self.tela.display)
+            self.grupo_tiros.draw(self.tela.display)
+            self.grupo_meteoros.draw(self.tela.display)
+            self.grupo_vidas.draw(self.tela.display)
+            self.grupo_meteoros_dourados.draw(self.tela.display)
+            grupo_pause.draw(self.tela.display)
 
             texto_pontuacao = font.render(f"Pontuação: {pontuacao}", True, (255, 255, 255))
-            self.__tela.display.blit(texto_pontuacao, (10, 10))
+            self.tela.display.blit(texto_pontuacao, (10, 10))
 
             pygame.display.update()
-            self.__clock.tick(60)
+            self.clock.tick(60)
+
+    def pause(self):
+        
+        grupo_botoes = pygame.sprite.Group()
+        pausado = True
+        titulo = Botao(grupo_botoes, rf'C:\GitHub\Jogo\imagens\titulo_jogo_pausado.png', (400, 100))
+        botao_voltar = Botao(grupo_botoes, rf'C:\GitHub\Jogo\imagens\bt_voltar_ao_jogo.png', (400, 200))
+        botao_menu = Botao(grupo_botoes, rf'C:\GitHub\Jogo\imagens\bt_menu_principal.png', (400, 320))
+        botao_sair = Botao(grupo_botoes, rf'C:\GitHub\Jogo\imagens\bt_salvar_sair.png', (400, 440))
+
+        fundo_transparente = pygame.Surface((800,600))
+        fundo_transparente.set_alpha(120)
+        fundo_transparente.fill((0, 0, 0))
+        fundo_congelado = self.tela.display.copy()
+
+        while pausado:
+
+            mouse_pos = pygame.mouse.get_pos()
+            mouse_botao = pygame.mouse.get_pressed()
+
+            for evento in pygame.event.get():
+                if evento.type == pygame.QUIT:
+                    pygame.quit()
+                    exit()
+                
+            if mouse_botao[0]:
+                if botao_menu.rect.collidepoint(mouse_pos):
+                    self.som.tocar_efeitos(r"C:\GitHub\Jogo\sons\clique.mp3")
+                    return False
+
+                elif botao_voltar.rect.collidepoint(mouse_pos):
+                    self.som.tocar_efeitos(r"C:\GitHub\Jogo\sons\clique.mp3")
+                    return True
+
+                elif botao_sair.rect.collidepoint(mouse_pos):
+                    self.som.tocar_efeitos(r"C:\GitHub\Jogo\sons\clique.mp3")
+                    pygame.quit()
+                    exit()
+
+            self.tela.display.blit(fundo_congelado,(0,0))
+            self.tela.display.blit(fundo_transparente, (0,0))
+            grupo_botoes.update()
+            grupo_botoes.draw(self.tela.display)
+
+            pygame.display.update()
+            self.clock.tick(15)
+    
+    def game_over(self):
+        pass
