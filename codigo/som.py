@@ -19,15 +19,15 @@ class Som():
 
         # Cursor de volume música
         self.__cursor_musica = pygame.Rect(
-            self.__x_barra_volume + int(self.__volume_musica * self.__largura_barra_volume) - 5,
-            self.__y_barra_musica - 5,
+            self.x_barra_volume + int(self.volume_musica * self.largura_barra_volume) - 5,
+            self.y_barra_musica - 5,
             10, 20
         )
 
         # Cursor de volume efeitos
         self.__cursor_efeitos = pygame.Rect(
-            self.__x_barra_volume + int(self.__volume_efeitos * self.__largura_barra_volume) - 5,
-            self.__y_barra_efeitos - 5,
+            self.x_barra_volume + int(self.volume_efeitos * self.largura_barra_volume) - 5,
+            self.y_barra_efeitos - 5,
             10, 20
         )
     
@@ -135,7 +135,7 @@ class Som():
     # endregion
 
     def atualizar_volumes(self):
-        pygame.mixer.music.set_volume(self.__volume_musica * self.__volume_geral)
+        pygame.mixer.music.set_volume(self.volume_musica * self.volume_geral)
     
     def tocar_efeitos(self, caminho, volume=None):
         efeito = pygame.mixer.Sound(caminho)  

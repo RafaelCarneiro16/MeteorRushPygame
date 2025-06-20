@@ -9,6 +9,7 @@ class Tela():
         self.__imagem_fundo = pygame.image.load(rf'{imagem_fundo}').convert_alpha()
         self.__rect_fundo = self.__imagem_fundo.get_rect(center = (400,300))
 
+    #region Setters e Getters
     @property
     def largura(self):
         return self.__largura
@@ -47,4 +48,6 @@ class Tela():
     
     @rect_fundo.setter
     def rect_fundo(self, novo):
-        self.__rect_fundo = novo                 
+        self.__rect_fundo = novo
+
+    #endregion                     

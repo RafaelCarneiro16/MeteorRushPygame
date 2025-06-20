@@ -2,23 +2,16 @@ import pygame
 import random
 from tela import Tela
 
-class Meteoro(pygame.sprite.Sprite):
+class Meteoro_Dourado(pygame.sprite.Sprite):
     def __init__(self, x, grupo):
         super().__init__(grupo)
-        self.original_image = pygame.image.load(rf"C:\GitHub\Jogo\imagens\meteoro2.png").convert_alpha()
-        tamanho_imagem = random.uniform(0.8, 1.3) 
-        self.__image = pygame.transform.rotozoom(self.original_image, random.randint(0, 360), tamanho_imagem)
+        self.__imagem_orig = pygame.image.load(rf"C:\GitHub\Jogo\imagens\meteoro_dourado.png").convert_alpha()
+        self.__image = pygame.transform.rotate(self.__imagem_orig, random.randint(0, 180))
         self.__rect = self.__image.get_rect(center = (x, -50))
         self.__direcao = random.randint(-2,2)
-      
-        # Pontuação temporária
-        if tamanho_imagem < 0.95:
-            self.__pontos = 100  
-        elif tamanho_imagem < 1.15:
-            self.__pontos = 50 
-        else:
-            self.__pontos = 20 
-    
+        self.__pontos = 500
+       
+    #region Setters e Getters
     @property
     def image(self):
         return self.__image
@@ -42,6 +35,8 @@ class Meteoro(pygame.sprite.Sprite):
     @pontos.setter
     def pontos(self, nova):
         self.__pontos = nova
+
+    #endregion    
 
     def update(self):
         self.__rect.x += self.__direcao
