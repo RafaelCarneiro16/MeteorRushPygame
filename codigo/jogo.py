@@ -136,6 +136,7 @@ class Jogo():
         self.__som.tocar_musica(rf"C:\GitHub\Jogo\sons\musica_jogo.wav")
 
         while rodando:
+
             mouse_pos = pygame.mouse.get_pos()
             mouse_botao = pygame.mouse.get_pressed()
 
@@ -188,24 +189,14 @@ class Jogo():
                     if not lista_vidas: 
                         self.som.parar_musica()
                         self.som.tocar_efeitos(r"C:\GitHub\Jogo\sons\game_over_efeito.wav")
+                        self.game_over()
                         rodando = False
 
-            colisao_m = pygame.sprite.groupcollide(self.grupo_tiros, self.grupo_meteoros, True, True)
-            for tiros, meteoros_acertados in colisao_m.items():
-                for meteoro in meteoros_acertados:
-                    pontuacao += meteoro.pontos
-                    self.som.tocar_efeitos(r"C:\GitHub\Jogo\sons\explosion.wav")
-
-            colisao_md = pygame.sprite.groupcollide(self.__grupo_tiros, self.__grupo_meteoros_dourados, True, True)
-            for tiros, meteoros_D_acertados in colisao_md.items():
-                for meteoros_dourados in meteoros_D_acertados:
-                    pontuacao += meteoros_dourados.pontos
-                    self.som.tocar_efeitos(r"C:\GitHub\Jogo\sons\explosion.wav")
-
-
+            pontuacao = self.colisao_meteoro(self.grupo_tiros, self.grupo_meteoros, pontuacao)
+            pontuacao = self.colisao_meteoro(self.grupo_tiros, self.grupo_meteoros_dourados, pontuacao)
 
             # Atualizações
-            self.grupo_jogador.update(self.__tela)
+            self.grupo_jogador.update()
             self.grupo_tiros.update()
             self.grupo_meteoros.update()
             self.grupo_vidas.update()
@@ -216,8 +207,10 @@ class Jogo():
             self.tela.display.blit(self.tela.imagem_fundo, (0, y1))
             self.tela.display.blit(self.tela.imagem_fundo, (0, y2))
 
+
             # Desenhos
             self.grupo_jogador.draw(self.tela.display)
+            self.jogador.animacao_vento()
             self.grupo_tiros.draw(self.tela.display)
             self.grupo_meteoros.draw(self.tela.display)
             self.grupo_vidas.draw(self.tela.display)
@@ -276,5 +269,61 @@ class Jogo():
             pygame.display.update()
             self.clock.tick(15)
     
+    def colisao_meteoro(self, grupo_tiros , grupo_meteoros, pontuacao):
+        colisao = pygame.sprite.groupcollide(grupo_tiros, grupo_meteoros, True, True)
+        for tiros, meteoros_acertados in colisao.items():
+            for meteoro in meteoros_acertados:
+                pontuacao += meteoro.pontos
+                self.som.tocar_efeitos(r"C:\GitHub\Jogo\sons\explosion.wav")
+
+        return pontuacao        
+
     def game_over(self):
-        pass
+        
+        grupo_botoes = pygame.sprite.Group()
+        pausado = True
+        botao_novo_jogo = Botao(grupo_botoes, rf'C:\GitHub\Jogo\imagens\bt_novo_jogo.png', (400, 200))
+        botao_menu = Botao(grupo_botoes, rf'C:\GitHub\Jogo\imagens\bt_menu_principal.png', (400, 320))
+        botao_sair = Botao(grupo_botoes, rf'C:\GitHub\Jogo\imagens\bt_salvar_sair.png', (400, 440))
+
+        fundo_transparente = pygame.Surface((800,600))
+        fundo_transparente.set_alpha(120)
+        fundo_transparente.fill((0, 0, 0))
+        fundo_congelado = self.tela.display.copy()
+
+        while pausado:
+
+            mouse_pos = pygame.mouse.get_pos()
+            mouse_botao = pygame.mouse.get_pressed()
+
+            for evento in pygame.event.get():
+                if evento.type == pygame.QUIT:
+                    pygame.quit()
+                    exit()
+                
+            if mouse_botao[0]:
+                if botao_menu.rect.collidepoint(mouse_pos):
+                    self.som.tocar_efeitos(r"C:\GitHub\Jogo\sons\clique.mp3")
+                    return
+
+                elif botao_novo_jogo.rect.collidepoint(mouse_pos):
+                    self.som.tocar_efeitos(r"C:\GitHub\Jogo\sons\clique.mp3")
+                    self.novo_jogo()
+                    return
+
+                elif botao_sair.rect.collidepoint(mouse_pos):
+                    self.som.tocar_efeitos(r"C:\GitHub\Jogo\sons\clique.mp3")
+                    pygame.quit()
+                    exit()
+
+            self.tela.display.blit(fundo_congelado,(0,0))
+            self.tela.display.blit(fundo_transparente, (0,0))
+            grupo_botoes.update()
+            grupo_botoes.draw(self.tela.display)
+
+            pygame.display.update()
+            self.clock.tick(15)
+
+    def cria_explosao(self, posicao):
+        explosao = pygame.image.load(r'C:\GitHub\Jogo\imagens\5.png')
+        self.tela.display.blit(explosao, (posicao))
