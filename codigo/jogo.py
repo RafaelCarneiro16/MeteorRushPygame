@@ -8,13 +8,15 @@ from vidas import Vidas
 from som import Som
 from meteorodourado import Meteoro_Dourado
 from botao import Botao
-
+from jogador_ranking import JogadorRanking
+from gerenciador_raking import GerenciadorRanking
+from cenario import Cenario
 
 class Jogo():
     def __init__(self, tela: Tela, jogador: Jogador, grupo_jogador: pygame.sprite.GroupSingle,
                  vidas: pygame.sprite.Group, meteoro: pygame.sprite.Group, tiro: pygame.sprite.Group, som: Som,
                  meteoros_dourados : pygame.sprite.Group):
-        
+
         self.__tela = tela
         self.__jogador = jogador
         self.__grupo_jogador = grupo_jogador
@@ -24,8 +26,19 @@ class Jogo():
         self.__clock = pygame.time.Clock()
         self.__som = som
         self.__grupo_meteoros_dourados = meteoros_dourados
+        self.__ranking = GerenciadorRanking()
+        self.__ranking.carregar_de_arquivo("ranking.json")
+        self.__cenario = Cenario(self.__tela)
 
     #region Setters e Getters
+    @property
+    def cenario(self):
+        return self.__cenario
+
+    @cenario.setter
+    def cenario(self, value):
+        self.__cenario = value
+
     @property
     def tela(self):
         return self.__tela
@@ -100,12 +113,11 @@ class Jogo():
     #endregion
 
     def novo_jogo(self):
-
         self.grupo_vidas.empty()
         self.grupo_meteoros.empty()
         self.grupo_tiros.empty()
         self.grupo_meteoros_dourados.empty()
-        
+
         grupo_pause = pygame.sprite.GroupSingle()
         botao_pause = Botao(grupo_pause, r'C:\GitHub\Jogo\imagens\pause.png', (60, 560))
 
@@ -148,7 +160,6 @@ class Jogo():
                 elif evento.type == pygame.KEYDOWN:
                     if evento.key == pygame.K_ESCAPE:
                         return
-                    
                     elif evento.key == pygame.K_SPACE:
                         Tiro(self.jogador.rect.midtop, self.grupo_tiros)
                         self.som.tocar_efeitos(rf"C:\GitHub\Jogo\sons\laser.wav")
@@ -165,8 +176,7 @@ class Jogo():
                 if botao_pause.rect.collidepoint(mouse_pos):
                     resultado = self.pause()
                     if not resultado:
-                       return      
-   
+                        return      
 
             # Atualizar posição do fundo
             y1 += velocidade_fundo
@@ -189,13 +199,18 @@ class Jogo():
                     if not lista_vidas: 
                         self.som.parar_musica()
                         self.som.tocar_efeitos(r"C:\GitHub\Jogo\sons\game_over_efeito.wav")
+
+                        nome = self.__ranking.solicitar_nome(self.__tela, self.__clock)  # Pede o nome
+                        self.__ranking.adicionar_jogador(JogadorRanking(nome, pontuacao))  # Adiciona o jogador com pontuação
+                        self.__ranking.salvar_em_arquivo("ranking.json")  # Salva o ranking
+
                         self.game_over()
                         rodando = False
 
             pontuacao = self.colisao_meteoro(self.grupo_tiros, self.grupo_meteoros, pontuacao)
             pontuacao = self.colisao_meteoro(self.grupo_tiros, self.grupo_meteoros_dourados, pontuacao)
 
-            # Atualizações
+            # Atualizações dos grupos
             self.grupo_jogador.update()
             self.grupo_tiros.update()
             self.grupo_meteoros.update()
@@ -207,6 +222,9 @@ class Jogo():
             self.tela.display.blit(self.tela.imagem_fundo, (0, y1))
             self.tela.display.blit(self.tela.imagem_fundo, (0, y2))
 
+            # Atualizar e desenhar o cenário 
+            self.__cenario.update()
+            self.__cenario.draw(self.tela.display)
 
             # Desenhos
             self.grupo_jogador.draw(self.tela.display)
@@ -223,8 +241,8 @@ class Jogo():
             pygame.display.update()
             self.clock.tick(60)
 
+
     def pause(self):
-        
         grupo_botoes = pygame.sprite.Group()
         pausado = True
         titulo = Botao(grupo_botoes, rf'C:\GitHub\Jogo\imagens\titulo_jogo_pausado.png', (400, 100))
@@ -238,7 +256,6 @@ class Jogo():
         fundo_congelado = self.tela.display.copy()
 
         while pausado:
-
             mouse_pos = pygame.mouse.get_pos()
             mouse_botao = pygame.mouse.get_pressed()
 
@@ -246,16 +263,14 @@ class Jogo():
                 if evento.type == pygame.QUIT:
                     pygame.quit()
                     exit()
-                
+
             if mouse_botao[0]:
                 if botao_menu.rect.collidepoint(mouse_pos):
                     self.som.tocar_efeitos(r"C:\GitHub\Jogo\sons\clique.mp3")
                     return False
-
                 elif botao_voltar.rect.collidepoint(mouse_pos):
                     self.som.tocar_efeitos(r"C:\GitHub\Jogo\sons\clique.mp3")
                     return True
-
                 elif botao_sair.rect.collidepoint(mouse_pos):
                     self.som.tocar_efeitos(r"C:\GitHub\Jogo\sons\clique.mp3")
                     pygame.quit()
@@ -268,18 +283,16 @@ class Jogo():
 
             pygame.display.update()
             self.clock.tick(15)
-    
+
     def colisao_meteoro(self, grupo_tiros , grupo_meteoros, pontuacao):
         colisao = pygame.sprite.groupcollide(grupo_tiros, grupo_meteoros, True, True)
         for tiros, meteoros_acertados in colisao.items():
             for meteoro in meteoros_acertados:
                 pontuacao += meteoro.pontos
                 self.som.tocar_efeitos(r"C:\GitHub\Jogo\sons\explosion.wav")
-
         return pontuacao        
 
     def game_over(self):
-        
         grupo_botoes = pygame.sprite.Group()
         pausado = True
         botao_novo_jogo = Botao(grupo_botoes, rf'C:\GitHub\Jogo\imagens\bt_novo_jogo.png', (400, 200))
@@ -292,7 +305,6 @@ class Jogo():
         fundo_congelado = self.tela.display.copy()
 
         while pausado:
-
             mouse_pos = pygame.mouse.get_pos()
             mouse_botao = pygame.mouse.get_pressed()
 
@@ -300,17 +312,15 @@ class Jogo():
                 if evento.type == pygame.QUIT:
                     pygame.quit()
                     exit()
-                
+
             if mouse_botao[0]:
                 if botao_menu.rect.collidepoint(mouse_pos):
                     self.som.tocar_efeitos(r"C:\GitHub\Jogo\sons\clique.mp3")
                     return
-
                 elif botao_novo_jogo.rect.collidepoint(mouse_pos):
                     self.som.tocar_efeitos(r"C:\GitHub\Jogo\sons\clique.mp3")
                     self.novo_jogo()
                     return
-
                 elif botao_sair.rect.collidepoint(mouse_pos):
                     self.som.tocar_efeitos(r"C:\GitHub\Jogo\sons\clique.mp3")
                     pygame.quit()
