@@ -85,17 +85,17 @@ class Cenario(pygame.sprite.Group):
             if agora >= self.proximo_evento:
                 if self.modo_atual == "planeta":
                     self.sprite.image = self.imagem_planeta
-                    self.__sprite.rect = self.__sprite.image.get_rect(topleft=(-180, self.tela.altura))
+                    self.__sprite.rect = self.__sprite.image.get_rect(topleft=(-100, -self.sprite.image.get_height()))
                     self.__modo_atual = "sol"
                 else:
                     self.__sprite.image = self.__imagem_sol
-                    self.__sprite.rect = self.__sprite.image.get_rect(topleft=(620, self.tela.altura))
+                    self.__sprite.rect = self.__sprite.image.get_rect(topleft=(680, -self.sprite.image.get_height()))
                     self.__modo_atual = "planeta"
 
                 self.__mostrando = True
         else:
-            self.__sprite.rect.y -= 1
-            if self.__sprite.rect.bottom < 0:
+            self.__sprite.rect.y += 1
+            if self.__sprite.rect.top > self.tela.altura:
                 self.__sprite.rect.topleft = (-999, -999)
                 self.__mostrando = False
                 self.__proximo_evento = agora + 5000
