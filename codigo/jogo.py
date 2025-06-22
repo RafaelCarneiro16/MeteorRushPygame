@@ -183,6 +183,7 @@ class Jogo():
         self.jogador.rect.center = (400,400)
         self.lista_vidas = []
         self.pontuacao = 0
+        self.jogador.tiro_triplo = False
         
         for i in range(3):
             x = self.tela.largura - (i * (40+5))
@@ -227,7 +228,9 @@ class Jogo():
             if y2 >= self.tela.altura:
                 y2 = -self.tela.altura
 
-            self.colisoes()
+            resultadocolisoes = self.colisoes()
+            if resultadocolisoes:
+                return
 
             self.pontuacao = self.colisao_meteoro(self.grupo_tiros, self.grupo_meteoros, self.pontuacao, False)
             self.pontuacao = self.colisao_meteoro(self.grupo_tiros, self.grupo_meteoros_dourados, self.pontuacao, True)
@@ -328,7 +331,7 @@ class Jogo():
             if mouse_botao[0]:
                 if botao_menu.rect.collidepoint(mouse_pos):
                     self.som.tocar_efeitos(r"C:\GitHub\Jogo\sons\clique.mp3")
-                    return
+                    return False
                 elif botao_novo_jogo.rect.collidepoint(mouse_pos):
                     self.som.tocar_efeitos(r"C:\GitHub\Jogo\sons\clique.mp3")
                     self.novo_jogo()
@@ -391,7 +394,6 @@ class Jogo():
         for powerup in colisao_powerup:
             if powerup.tipo == 'power_up':
                 powerup.kill()
-
                 powerup_ativo = any(p.tipo in ['escudo', 'tiro_triplo'] for p in self.grupo_powerup)
 
                 if not powerup_ativo:
@@ -416,6 +418,7 @@ class Jogo():
                         self.som.parar_musica()
                         self.som.tocar_efeitos(r"C:\GitHub\Jogo\sons\game_over_efeito.wav")
                         self.game_over(self.pontuacao)
+                        return True
 
     def updates(self):
         self.grupo_jogador.update()
