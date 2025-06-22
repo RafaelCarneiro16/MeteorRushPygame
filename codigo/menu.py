@@ -202,7 +202,7 @@ class Menu():
 
             for i, jogador in enumerate(self.ranking.jogadores, 1):
                 texto = fonte.render(f"{i}. {jogador.nome}: {jogador.pontuacao} pts", True, (255, 255, 255))
-                self._tela.display.blit(texto, (150, 100 + i * 40))
+                self.tela.display.blit(texto, (150, 100 + i * 40))
 
             pygame.display.update()
             self.clock.tick(60)
