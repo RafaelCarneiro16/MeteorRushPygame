@@ -2,6 +2,7 @@ import json
 import os
 import pygame
 from jogador_ranking import JogadorRanking
+from botao import Botao
 
 class GerenciadorRanking:
     def __init__(self):
@@ -46,7 +47,7 @@ class GerenciadorRanking:
             print("Erro ao ler o arquivo JSON. Ranking resetado.")
             self.jogadores = []
 
-    def solicitar_nome(self, tela, clock) -> str:
+    def solicitar_nome(self, tela, clock, botao: Botao) -> str:
         nome = ""
         fonte = pygame.font.Font(r"C:\GitHub\Jogo\fonte.ttf", 32)
         rodando = True
@@ -66,6 +67,8 @@ class GerenciadorRanking:
                             nome += evento.unicode
 
             tela.display.blit(tela.imagem_fundo, tela.rect_fundo)
+            tela.display.blit(botao.image, botao.rect)
+
 
             titulo = fonte.render("Digite seu nome e pressione Enter:", True, (255, 255, 255))
             campo = fonte.render(nome + "|", True, (255, 255, 0))

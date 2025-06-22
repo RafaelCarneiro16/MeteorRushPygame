@@ -26,8 +26,18 @@ class Vidas(pygame.sprite.Sprite):
     def rect(self, novo):
         self.__rect = novo
 
+    @property
+    def imagem_vidaperdida(self):
+        return self.__imagem_vidaperdida
+
+    @imagem_vidaperdida.setter
+    def imagem_vidaperdida(self, value):
+        self.__imagem_vidaperdida = value   
+        
+
     def perder_vida(self):
-        self.image = self.__imagem_vidaperdida
+        self.image = self.imagem_vidaperdida
+        
     
         
     

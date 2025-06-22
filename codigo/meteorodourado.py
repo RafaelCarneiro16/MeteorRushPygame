@@ -3,45 +3,32 @@ import random
 from tela import Tela
 
 class Meteoro_Dourado(pygame.sprite.Sprite):
-    def __init__(self, x, grupo):
+    def __init__(self, grupo, tela: Tela, jogador):
         super().__init__(grupo)
-        self.__imagem_orig = pygame.image.load(rf"C:\GitHub\Jogo\imagens\meteoro_dourado.png").convert_alpha()
-        self.__image = pygame.transform.rotate(self.__imagem_orig, random.randint(0, 180))
-        self.__rect = self.__image.get_rect(center = (x, -50))
-        self.__direcao = random.randint(-2,2)
-        self.__pontos = 500
-       
-    #region Setters e Getters
-    @property
-    def image(self):
-        return self.__image
-    
-    @image.setter
-    def image(self, nova):
-        self.__image = nova
-
-    @property
-    def rect(self):
-        return self.__rect
-    
-    @rect.setter
-    def rect(self, nova):
-        self.__rect = nova
-
-    @property
-    def pontos(self):
-        return self.__pontos
-    
-    @pontos.setter
-    def pontos(self, nova):
-        self.__pontos = nova
-
-    #endregion    
+        self.tela = tela
+        self.jogador = jogador 
+        self.image = pygame.image.load(r'C:\GitHub\Jogo\imagens\meteoro_dourado.png').convert_alpha()
+        self.rect = self.image.get_rect()
+        self.rect.center = (random.randint(0, tela.largura), -50)
+        self.pos = pygame.Vector2(self.rect.center)
+        self.pontos = 500 
+        self.seguindo = True
 
     def update(self):
-        self.__rect.x += self.__direcao
-        self.__rect.y += 4
-        if self.__rect.top > 600 or self.__rect.left > 800 or self.__rect.right < 0 :
-            self.kill()
-          
-         
+        if self.seguindo:
+            destino = pygame.Vector2(self.jogador.rect.center)
+            direcao = destino - self.pos
+
+            if self.pos.y >= self.jogador.rect.centery:
+                self.seguindo = False
+
+            if direcao.length() != 0:
+                direcao = direcao.normalize()
+
+            self.pos += direcao * 4
+            self.rect.center = self.pos
+        
+        else:
+            self.rect.y += 4
+            if self.rect.top > 600:
+                self.kill()

@@ -31,5 +31,3 @@ class Botao(pygame.sprite.Sprite):
     def posicao(self, nova_posicao):
         self.__posicao =  nova_posicao
 
-        return False
-
