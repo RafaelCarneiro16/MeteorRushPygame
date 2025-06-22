@@ -1,4 +1,3 @@
-# gerenciador_raking.py
 import json
 import os
 import pygame
@@ -7,7 +6,15 @@ from botao import Botao
 
 class GerenciadorRanking:
     def __init__(self):
-        self.jogadores = []
+        self.__jogadores = []
+    
+    @property
+    def jogadores(self):
+        return self.__jogadores
+    
+    @jogadores.setter
+    def jogadores(self, valor):
+        self.__jogadores = valor
 
     def adicionar_jogador(self, jogador: JogadorRanking):
         self.jogadores.append(jogador)

@@ -3,8 +3,9 @@ import pygame
 class Botao(pygame.sprite.Sprite):
     def __init__(self, grupo, caminho_imagem, posicao : tuple):
         super().__init__(grupo)
+        self.__posicao = posicao
         self.__image = pygame.image.load(rf'{caminho_imagem}').convert_alpha()
-        self.__rect = self.__image.get_rect(center = (posicao))
+        self.__rect = self.__image.get_rect(center = (self.posicao))
 
     @property
     def image(self):
@@ -21,6 +22,7 @@ class Botao(pygame.sprite.Sprite):
     @rect.setter
     def rect(self, novo):
         self.__rect =  novo
+
     @property
     def posicao(self):
         return self.__posicao
