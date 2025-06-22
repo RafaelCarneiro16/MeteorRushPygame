@@ -11,23 +11,18 @@ pygame.init()
 tela = Tela(800, 600, 'C:/GitHub/Jogo/imagens/fundo.png')
 tela_menu = Tela(800, 600, 'C:/GitHub/Jogo/imagens/fundo2.png')
 
-grupo_vidas = pygame.sprite.Group()
 grupo_jogador = pygame.sprite.GroupSingle()
-grupo_tiros = pygame.sprite.Group()
-grupo_meteoros = pygame.sprite.Group()
-grupo_botoes = pygame.sprite.Group()
-grupo_meteoros_dourados = pygame.sprite.Group()
-grupo_sons = Som()
+
+som = Som()
 ranking = GerenciadorRanking()
 
 jogador = Jogador(grupo_jogador, tela)
 
 ranking.carregar_de_arquivo("ranking.json")
 
-jogo = Jogo(tela, jogador, grupo_jogador, grupo_vidas, grupo_meteoros,
-            grupo_tiros, grupo_sons, grupo_meteoros_dourados)
+jogo = Jogo(tela, jogador, grupo_jogador, som)
 
-menu = Menu(jogo, tela_menu, grupo_botoes, grupo_sons, ranking)
+menu = Menu(jogo, tela_menu, som, ranking)
 
 while True:
     menu.rodando_menu()

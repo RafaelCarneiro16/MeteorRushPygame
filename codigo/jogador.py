@@ -14,13 +14,15 @@ class Jogador(pygame.sprite.Sprite):
         ]
         self.__indice = 0
         self.__image = self.__frames[self.__indice]
-        self.__rect = self.__image.get_rect(center = (400, 500))
+        self.__rect = self.__image.get_rect(center = (400, 400))
         self.__tempo_animacao = 5 
         self.__contador = 0
         self.__vento = pygame.image.load(fr'C:\GitHub\Jogo\imagens\vento.png').convert_alpha()
         self.__vento_rect = self.__vento.get_rect(center = (self.__rect.center))
         self.__subindo = False
+        self.__tiro_triplo = False
 
+    #region Setters e Getters
     @property
     def tela(self):
         return self.__tela
@@ -76,6 +78,40 @@ class Jogador(pygame.sprite.Sprite):
     @contador.setter
     def contador(self, value):
         self.__contador = value
+
+    @property
+    def vento(self):
+        return self.__vento
+
+    @vento.setter
+    def vento(self, value):
+        self.__vento = value
+
+    @property
+    def vento_rect(self):
+        return self.__vento_rect
+
+    @vento_rect.setter
+    def vento_rect(self, value):
+        self.__vento_rect = value
+
+    @property
+    def subindo(self):
+        return self.__subindo
+
+    @subindo.setter
+    def subindo(self, value):
+        self.__subindo = value
+
+    @property
+    def tiro_triplo(self):
+        return self.__tiro_triplo
+
+    @tiro_triplo.setter
+    def tiro_triplo(self, value):
+        self.__tiro_triplo = value
+
+    #endregion     
 
     def animacao_vento(self):
         if self.__subindo:
