@@ -15,7 +15,7 @@ grupo_jogador = pygame.sprite.GroupSingle()
 
 som = Som()
 ranking = GerenciadorRanking()
-
+ 
 jogador = Jogador(grupo_jogador, tela)
 
 ranking.carregar_de_arquivo("ranking.json")

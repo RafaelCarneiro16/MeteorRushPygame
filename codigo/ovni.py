@@ -2,7 +2,7 @@ import pygame
 from tiro import Tiro
 
 class Ovni(pygame.sprite.Sprite):
-    def __init__(self, grupo, imagem, posicao, grupo_tiros, jogador):
+    def __init__(self, grupo, imagem, posicao, grupo_tiros : pygame.sprite.Group, jogador):
         super().__init__(grupo)
         self.__image = pygame.image.load(imagem).convert_alpha()
         self.__rect = self.__image.get_rect(center=posicao)
@@ -84,23 +84,17 @@ class Ovni(pygame.sprite.Sprite):
 
     def update(self):
         # Movimento horizontal
-        self.__rect.x += self.__velocidade_x * self.__direcao
+        self.rect.x += self.velocidade_x * self.direcao
 
-        if self.__rect.right >= 800 or self.__rect.left <= 0:
-            self.__direcao *= -1
+        if self.rect.right >= 800 or self.rect.left <= 0:
+            self.direcao *= -1
 
         # Disparo com intervalo
         agora = pygame.time.get_ticks()
-        if agora - self.__tempo_ultimo_tiro >= self.__delay_tiro:
-            self.__atirar()
-            self.__tempo_ultimo_tiro = agora
+        if agora - self.tempo_ultimo_tiro >= self.delay_tiro:
+            self.atirar()
+            self.tempo_ultimo_tiro = agora
 
     def atirar(self):
-        posicao_tiro = self.__rect.midbottom
-        tiro = Tiro(
-            posicao=posicao_tiro,
-            grupo=self.__grupo_tiros,
-            direcao=1,
-            caminho_imagem=rf"C:\GitHub\Jogo\imagens\tiro_inimigo.png"
-        )
-        self.__grupo_tiros.add(tiro)
+        posicao_tiro = self.rect.midbottom
+        tiro = Tiro((posicao_tiro), self.grupo_tiros, direcao = 1, caminho_imagem = rf"C:\GitHub\Jogo\imagens\tiro_inimigo.png")

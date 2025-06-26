@@ -208,8 +208,6 @@ class Jogo():
         self.grupo_meteoros_dourados.empty()
         self.grupo_ovnis.empty()
         self.grupo_tiros_inimigos.empty()
-
-        
         
         ovni = Ovni(self.grupo_ovnis, rf"C:\GitHub\Jogo\imagens\ovni.png", (random.randint(100, 700), 100), self.grupo_tiros_inimigos, self.jogador)
           
@@ -399,14 +397,14 @@ class Jogo():
                     return
                 elif evento.key == pygame.K_SPACE:
                     if not self.jogador.tiro_triplo:
-                        Tiro(self.jogador.rect.midtop, self.grupo_tiros, 1)
+                        Tiro((self.jogador.rect.midtop), self.grupo_tiros, direcao = 1, caminho_imagem = rf'C:\GitHub\Jogo\imagens\tiro_jogador.png')
                         self.som.tocar_efeitos(rf"C:\GitHub\Jogo\sons\laser.wav")
 
                     else:
                         x, y = self.jogador.rect.midtop
-                        Tiro((x - 20, y), self.grupo_tiros, 1)
-                        Tiro((x, y - 20), self.grupo_tiros, 1)
-                        Tiro((x + 20, y), self.grupo_tiros, 1)
+                        Tiro((x - 20, y), self.grupo_tiros, direcao = 1, caminho_imagem = rf'C:\GitHub\Jogo\imagens\tiro_jogador.png')
+                        Tiro((x, y - 20), self.grupo_tiros, direcao = 1, caminho_imagem = rf'C:\GitHub\Jogo\imagens\tiro_jogador.png')
+                        Tiro((x + 20, y), self.grupo_tiros, direcao = 1, caminho_imagem =rf'C:\GitHub\Jogo\imagens\tiro_jogador.png')
                         self.som.tocar_efeitos(rf"C:\GitHub\Jogo\sons\laser.wav")
                         
             elif evento.type == evento_meteoro:
@@ -447,19 +445,21 @@ class Jogo():
                         self.som.tocar_efeitos(r"C:\GitHub\Jogo\sons\game_over_efeito.wav")
                         self.game_over(self.pontuacao)
                         return True
-        for tiro in self.grupo_tiros_inimigos:
+        
+        colisao_tiro_jogador = pygame.sprite.spritecollide(self.jogador, self.grupo_tiros_inimigos, True)
 
-            if self.jogador.rect.colliderect(tiro.rect):
+        for tiro in self.grupo_tiros_inimigos:
+            if colisao_tiro_jogador:
               tiro.kill()
               self.som.tocar_efeitos(rf"C:\GitHub\Jogo\sons\hit.wav")
-            if self.lista_vidas:
-              vida_perdida = self.lista_vidas.pop()
-              vida_perdida.kill()
-              if not self.lista_vidas:
-                self.som.parar_musica()
-                self.som.tocar_efeitos(rf"C:\GitHub\Jogo\sons\game_over_efeito.wav")
-                self.game_over(self.pontuacao)
-                return True                
+              if self.lista_vidas:
+                vida_perdida = self.lista_vidas.pop()
+                vida_perdida.kill()
+                if not self.lista_vidas:
+                    self.som.parar_musica()
+                    self.som.tocar_efeitos(rf"C:\GitHub\Jogo\sons\game_over_efeito.wav")
+                    self.game_over(self.pontuacao)
+                    return True                
 
     def updates(self):
         self.grupo_jogador.update()
