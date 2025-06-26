@@ -13,6 +13,7 @@ from gerenciador_raking import GerenciadorRanking
 from cenario import Cenario
 from explosao import Explosao
 from powerups import PowerUp
+from ovni import Ovni
 
 class Jogo():
     def __init__(self, tela: Tela, jogador: Jogador, grupo_jogador : pygame.sprite.Group, som: Som):
@@ -35,6 +36,10 @@ class Jogo():
         self.__botao_pause = Botao(self.grupo_pause, r'C:\GitHub\Jogo\imagens\pause.png', (60, 560))
         self.__lista_vidas = []
         self.__pontuacao = 0
+        self.__grupo_ovnis = pygame.sprite.Group()
+        self.__grupo_tiros_inimigos = pygame.sprite.Group()
+
+
 
     #region Setters e Getters
     @property
@@ -172,6 +177,22 @@ class Jogo():
     @ranking.setter
     def ranking(self, value):
         self.__ranking = value    
+    @property
+    def grupo_ovnis(self):
+        return self.__grupo_ovnis
+
+    @grupo_ovnis.setter
+    def grupo_ovnis(self, value):
+        self.__grupo_ovnis = value
+
+    @property
+    def grupo_tiros_inimigos(self):
+        return self.__grupo_tiros_inimigos
+
+    @grupo_tiros_inimigos.setter
+    def grupo_tiros_inimigos(self, value):
+        self.__grupo_tiros_inimigos = value
+
 
     #endregion
 
@@ -184,7 +205,19 @@ class Jogo():
         self.lista_vidas = []
         self.pontuacao = 0
         self.jogador.tiro_triplo = False
+        self.grupo_meteoros_dourados.empty()
+        self.grupo_ovnis.empty()
+        self.grupo_tiros_inimigos.empty()
+
         
+        
+        ovni = Ovni(
+         grupo=self.grupo_ovnis,
+         imagem=rf"C:\GitHub\Jogo\imagens\ovni.png",
+         posicao=(random.randint(100, 700), 100),
+         grupo_tiros=self.grupo_tiros_inimigos,
+         jogador=self.jogador)
+          
         for i in range(3):
             x = self.tela.largura - (i * (40+5))
             vida = Vidas(self.grupo_vidas, x)
@@ -419,6 +452,19 @@ class Jogo():
                         self.som.tocar_efeitos(r"C:\GitHub\Jogo\sons\game_over_efeito.wav")
                         self.game_over(self.pontuacao)
                         return True
+        for tiro in self.grupo_tiros_inimigos:
+
+            if self.jogador.rect.colliderect(tiro.rect):
+              tiro.kill()
+              self.som.tocar_efeitos(rf"C:\GitHub\Jogo\sons\hit.wav")
+            if self.lista_vidas:
+              vida_perdida = self.lista_vidas.pop()
+              vida_perdida.kill()
+              if not self.lista_vidas:
+                self.som.parar_musica()
+                self.som.tocar_efeitos(rf"C:\GitHub\Jogo\sons\game_over_efeito.wav")
+                self.game_over(self.pontuacao)
+                return True                
 
     def updates(self):
         self.grupo_jogador.update()
@@ -429,6 +475,9 @@ class Jogo():
         self.grupo_explosoes.update()
         self.grupo_powerup.update()
         self.grupo_pause.update()
+        self.grupo_ovnis.update()
+        self.grupo_tiros_inimigos.update()
+
 
     def desenhos(self):
         self.grupo_jogador.draw(self.tela.display)
@@ -440,3 +489,5 @@ class Jogo():
         self.grupo_explosoes.draw(self.tela.display)
         self.grupo_powerup.draw(self.tela.display)
         self.grupo_pause.draw(self.tela.display)
+        self.grupo_ovnis.draw(self.tela.display)
+        self.grupo_tiros_inimigos.draw(self.tela.display)
