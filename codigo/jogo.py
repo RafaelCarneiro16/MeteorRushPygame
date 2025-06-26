@@ -448,18 +448,16 @@ class Jogo():
         
         colisao_tiro_jogador = pygame.sprite.spritecollide(self.jogador, self.grupo_tiros_inimigos, True)
 
-        for tiro in self.grupo_tiros_inimigos:
-            if colisao_tiro_jogador:
-              tiro.kill()
-              self.som.tocar_efeitos(rf"C:\GitHub\Jogo\sons\hit.wav")
-              if self.lista_vidas:
+        for tiro in colisao_tiro_jogador:
+            self.som.tocar_efeitos(rf"C:\GitHub\Jogo\sons\hit.wav")
+            if self.lista_vidas:
                 vida_perdida = self.lista_vidas.pop()
                 vida_perdida.kill()
-                if not self.lista_vidas:
-                    self.som.parar_musica()
-                    self.som.tocar_efeitos(rf"C:\GitHub\Jogo\sons\game_over_efeito.wav")
-                    self.game_over(self.pontuacao)
-                    return True                
+            if not self.lista_vidas:
+                self.som.parar_musica()
+                self.som.tocar_efeitos(rf"C:\GitHub\Jogo\sons\game_over_efeito.wav")
+                self.game_over(self.pontuacao)
+                return True                
 
     def updates(self):
         self.grupo_jogador.update()

@@ -97,4 +97,4 @@ class Ovni(pygame.sprite.Sprite):
 
     def atirar(self):
         posicao_tiro = self.rect.midbottom
-        tiro = Tiro((posicao_tiro), self.grupo_tiros, direcao = 1, caminho_imagem = rf"C:\GitHub\Jogo\imagens\tiro_inimigo.png")
+        tiro = Tiro((posicao_tiro), self.grupo_tiros, direcao = -1, caminho_imagem = rf"C:\GitHub\Jogo\imagens\tiro_inimigo.png")

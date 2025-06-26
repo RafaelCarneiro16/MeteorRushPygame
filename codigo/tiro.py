@@ -3,8 +3,8 @@ from tela import Tela
 from jogador import Jogador
 
 class Tiro(pygame.sprite.Sprite):
-    def __init__(self, posição : tuple, *grupo, direcao, caminho_imagem = None):
-        super().__init__(*grupo)
+    def __init__(self, posição : tuple, grupo, direcao, caminho_imagem = None):
+        super().__init__(grupo)
 
         if caminho_imagem is None:
             caminho_imagem = rf"C:\GitHub\Jogo\imagens\tiro_jogador.png"
@@ -36,10 +36,7 @@ class Tiro(pygame.sprite.Sprite):
     @direcao.setter
     def direcao(self, novo):
         self.__direcao = novo
-
-    def draw(self, tela: Tela):
-        tela.display.blit(self.image, self.rect)
-
+        
     def update(self):
         self.rect.y -= self.direcao * 10
         if self.rect.bottom < 0:
