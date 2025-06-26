@@ -211,12 +211,7 @@ class Jogo():
 
         
         
-        ovni = Ovni(
-         grupo=self.grupo_ovnis,
-         imagem=rf"C:\GitHub\Jogo\imagens\ovni.png",
-         posicao=(random.randint(100, 700), 100),
-         grupo_tiros=self.grupo_tiros_inimigos,
-         jogador=self.jogador)
+        ovni = Ovni(self.grupo_ovnis, rf"C:\GitHub\Jogo\imagens\ovni.png", (random.randint(100, 700), 100), self.grupo_tiros_inimigos, self.jogador)
           
         for i in range(3):
             x = self.tela.largura - (i * (40+5))
