@@ -403,8 +403,8 @@ class Jogo():
         colisao_ovnis = pygame.sprite.groupcollide(self.grupo_tiros, self.grupo_ovnis, True, False)
         for tiros, ovnis_acertados in colisao_ovnis.items():
             for ovni in ovnis_acertados:
-                if hasattr(ovni, "vida"):
-                   ovni.vida -= 1
+                if hasattr(ovni, "levar_dano"):
+                   ovni.levar_dano()
                    if ovni.vida <= 0:
                     self.som.tocar_efeitos(r"C:\GitHub\Jogo\sons\explosion.wav")
                     Explosao(self.grupo_explosoes, self.tela, ovni.rect.center)

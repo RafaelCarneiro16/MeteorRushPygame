@@ -17,6 +17,9 @@ class Ovni(pygame.sprite.Sprite):
         self.__tempo_ultimo_tiro = pygame.time.get_ticks()
         self.__delay_tiro = 1500
         self.__vida = 3
+        self.__imagem_original = self.__image.copy()
+        self.__tempo_dano = 0
+        self.__dano_duracao = 200
 
     #region Getters e Setters
     @property
@@ -103,6 +106,9 @@ class Ovni(pygame.sprite.Sprite):
         if agora - self.tempo_ultimo_tiro >= self.delay_tiro:
             self.atirar()
             self.tempo_ultimo_tiro = agora
+        
+        if pygame.time.get_ticks() - self.__tempo_dano >= self.__dano_duracao:
+            self.__image = self.__imagem_original
 
     def atirar(self):
         posicao_tiro = self.rect.midbottom
@@ -115,3 +121,12 @@ class Ovni(pygame.sprite.Sprite):
         diferenca = self.jogador.rect.centerx - self.rect.centerx
         if abs(diferenca) > 1:
            self.rect.x += self.velocidade_x if diferenca > 0 else -self.velocidade_x
+
+    def levar_dano(self):
+        self.vida -= 1
+        self.__tempo_dano = pygame.time.get_ticks()
+        
+        # Cria uma imagem vermelha temporária
+        imagem_vermelha = self.__imagem_original.copy()
+        imagem_vermelha.fill((255, 0, 0, 100), special_flags=pygame.BLEND_RGBA_MULT)
+        self.__image = imagem_vermelha
