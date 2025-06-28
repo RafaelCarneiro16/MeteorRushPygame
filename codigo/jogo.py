@@ -400,13 +400,18 @@ class Jogo():
                 self.ovni_ativo = True
 
     def colisoes(self):
-        colisao_ovnis = pygame.sprite.groupcollide(self.grupo_tiros, self.grupo_ovnis, True, True)
+        colisao_ovnis = pygame.sprite.groupcollide(self.grupo_tiros, self.grupo_ovnis, True, False)
         for tiros, ovnis_acertados in colisao_ovnis.items():
             for ovni in ovnis_acertados:
-                self.som.tocar_efeitos(r"C:\GitHub\Jogo\sons\explosion.wav")
-                Explosao(self.grupo_explosoes, self.tela, ovni.rect.center)
-                self.ovni_ativo = False
-                pygame.time.set_timer(self.evento_ovni, 8000, loops=1) 
+                if hasattr(ovni, "vida"):
+                   ovni.vida -= 1
+                   if ovni.vida <= 0:
+                    self.som.tocar_efeitos(r"C:\GitHub\Jogo\sons\explosion.wav")
+                    Explosao(self.grupo_explosoes, self.tela, ovni.rect.center)
+                    ovni.kill()
+                    self.ovni_ativo = False
+                    pygame.time.set_timer(self.evento_ovni, 8000, loops=1)
+
 
         colisao_powerup = pygame.sprite.spritecollide(self.jogador, self.grupo_powerup, False)
         for powerup in colisao_powerup:

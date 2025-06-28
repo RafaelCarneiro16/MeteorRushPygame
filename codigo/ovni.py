@@ -16,6 +16,7 @@ class Ovni(pygame.sprite.Sprite):
         self.__jogador = jogador
         self.__tempo_ultimo_tiro = pygame.time.get_ticks()
         self.__delay_tiro = 1500
+        self.__vida = 3
 
     #region Getters e Setters
     @property
@@ -84,6 +85,14 @@ class Ovni(pygame.sprite.Sprite):
     @delay_tiro.setter
     def delay_tiro(self, novo_delay):
         self.__delay_tiro = novo_delay
+    
+    @property
+    def vida(self):
+        return self.__vida
+
+    @vida.setter
+    def vida(self, nova_vida):
+        self.__vida = nova_vida
 
     #endregion
 
