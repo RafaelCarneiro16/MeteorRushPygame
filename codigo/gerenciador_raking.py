@@ -7,47 +7,63 @@ from botao import Botao
 class GerenciadorRanking:
     def __init__(self):
         self.__jogadores = []
-    
-    #region Setters e Getters
+
+    # region Setters e Getters
     @property
     def jogadores(self):
         return self.__jogadores
-    
+
     @jogadores.setter
     def jogadores(self, valor):
         self.__jogadores = valor
-
-    #endregion
+    # endregion
 
     def adicionar_jogador(self, jogador: JogadorRanking):
-        self.jogadores.append(jogador)
-        self._ordenar_e_limitar()
+        try:
+            self.jogadores.append(jogador)
+            self._ordenar_e_limitar()
+        except Exception as erro:
+            print(f"⚠️ [RANKING] Erro ao adicionar jogador: {erro}")
 
     def _ordenar_e_limitar(self):
-        self.jogadores.sort(key=lambda x: x.pontuacao, reverse=True)
-        self.jogadores = self.jogadores[:10]
+        try:
+            self.jogadores.sort(key=lambda x: x.pontuacao, reverse=True)
+            self.jogadores = self.jogadores[:10]
+        except Exception as erro:
+            print(f"⚠️ [RANKING] Erro ao ordenar e limitar ranking: {erro}")
 
     def exibir_ranking_terminal(self):
-        for i, jogador in enumerate(self.jogadores, 1):
-            print(f"{i}. {jogador}")
+        try:
+            for i, jogador in enumerate(self.jogadores, 1):
+                print(f"{i}. {jogador}")
+        except Exception as erro:
+            print(f"⚠️ [RANKING] Erro ao exibir ranking no terminal: {erro}")
 
     def salvar_em_arquivo(self, nome_arquivo: str):
-        caminho = os.path.join(os.path.dirname(__file__), nome_arquivo)
-        with open(caminho, "w") as f:
-            json.dump([j.to_dict() for j in self.jogadores], f, indent=4)
+        try:
+            caminho = os.path.join(os.path.dirname(__file__), nome_arquivo)
+            with open(caminho, "w") as f:
+                json.dump([j.to_dict() for j in self.jogadores], f, indent=4)
+            print(f"✅ [RANKING] Ranking salvo com sucesso no arquivo: {nome_arquivo}")
+        except Exception as erro:
+            print(f"⚠️ [RANKING] Erro ao salvar o arquivo {nome_arquivo}: {erro}")
 
     def carregar_de_arquivo(self, nome_arquivo: str):
-        caminho = os.path.join(os.path.dirname(__file__), nome_arquivo)
         try:
+            caminho = os.path.join(os.path.dirname(__file__), nome_arquivo)
             with open(caminho, "r") as f:
                 dados = json.load(f)
                 self.jogadores = [JogadorRanking.from_dict(d) for d in dados]
                 self._ordenar_e_limitar()
+            print(f"✅ [RANKING] Ranking carregado com sucesso do arquivo: {nome_arquivo}")
         except FileNotFoundError:
-            print("Arquivo não encontrado. Criando novo ranking vazio.")
+            print(f"⚠️ [RANKING] Arquivo {nome_arquivo} não encontrado. Criando novo ranking vazio.")
             self.jogadores = []
         except json.JSONDecodeError:
-            print("Erro ao ler o arquivo JSON. Ranking resetado.")
+            print(f"⚠️ [RANKING] Erro ao ler o arquivo JSON {nome_arquivo}. Ranking resetado.")
+            self.jogadores = []
+        except Exception as erro:
+            print(f"⚠️ [RANKING] Erro inesperado ao carregar o arquivo {nome_arquivo}: {erro}")
             self.jogadores = []
 
     def solicitar_nome(self, tela, clock, botao: Botao) -> str:
@@ -69,18 +85,20 @@ class GerenciadorRanking:
                         if len(nome) < 15 and evento.unicode.isprintable():
                             nome += evento.unicode
 
-            tela.display.blit(tela.imagem_fundo, tela.rect_fundo)
-            tela.display.blit(botao.image, botao.rect)
+            try:
+                tela.display.blit(tela.imagem_fundo, tela.rect_fundo)
+                tela.display.blit(botao.image, botao.rect)
 
+                titulo = fonte.render("Digite seu nome e pressione Enter:", True, (255, 255, 255))
+                campo = fonte.render(nome + "|", True, (255, 255, 0))
 
-            titulo = fonte.render("Digite seu nome e pressione Enter:", True, (255, 255, 255))
-            campo = fonte.render(nome + "|", True, (255, 255, 0))
+                tela.display.blit(titulo, (tela.largura // 2 - titulo.get_width() // 2, 200))
+                tela.display.blit(campo, (tela.largura // 2 - campo.get_width() // 2, 260))
 
-            tela.display.blit(titulo, (tela.largura // 2 - titulo.get_width() // 2, 200))
-            tela.display.blit(campo, (tela.largura // 2 - campo.get_width() // 2, 260))
-
-            pygame.display.update()
-            clock.tick(60)
+                pygame.display.update()
+                clock.tick(60)
+            except Exception as erro:
+                print(f"⚠️ [RANKING] Erro na tela de solicitação de nome: {erro}")
 
         return nome
 
@@ -96,14 +114,17 @@ class GerenciadorRanking:
                 elif evento.type == pygame.KEYDOWN and evento.key == pygame.K_ESCAPE:
                     rodando = False
 
-            tela.display.blit(tela.imagem_fundo, tela.rect_fundo)
+            try:
+                tela.display.blit(tela.imagem_fundo, tela.rect_fundo)
 
-            titulo = fonte.render("Ranking de Pontuação", True, (255, 255, 255))
-            tela.display.blit(titulo, (tela.largura // 2 - titulo.get_width() // 2, 50))
+                titulo = fonte.render("Ranking de Pontuação", True, (255, 255, 255))
+                tela.display.blit(titulo, (tela.largura // 2 - titulo.get_width() // 2, 50))
 
-            for i, jogador in enumerate(self.jogadores, 1):
-                texto = fonte.render(f"{i}. {jogador.nome}: {jogador.pontuacao} pts", True, (255, 255, 255))
-                tela.display.blit(texto, (150, 100 + i * 40))
+                for i, jogador in enumerate(self.jogadores, 1):
+                    texto = fonte.render(f"{i}. {jogador.nome}: {jogador.pontuacao} pts", True, (255, 255, 255))
+                    tela.display.blit(texto, (150, 100 + i * 40))
 
-            pygame.display.update()
-            clock.tick(60)
+                pygame.display.update()
+                clock.tick(60)
+            except Exception as erro:
+                print(f"⚠️ [RANKING] Erro na exibição do ranking: {erro}")

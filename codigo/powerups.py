@@ -8,8 +8,15 @@ class PowerUp(pygame.sprite.Sprite):
         self.__tela = tela
         self.__jogador = jogador
 
-        self.__power_up_imagem = pygame.image.load(r'C:\GitHub\Jogo\imagens\power_up.png').convert_alpha() 
-        self.__escudo_imagem = pygame.image.load(r'C:\GitHub\Jogo\imagens\escudo.png').convert_alpha()
+        try:
+            self.__power_up_imagem = pygame.image.load(r'C:\GitHub\Jogo\imagens\power_up.png').convert_alpha() 
+        except pygame.error as erro:
+            print(f"⚠️ [POWERUP] Falha ao carregar imagem power_up: {erro}")
+
+        try:
+            self.__escudo_imagem = pygame.image.load(r'C:\GitHub\Jogo\imagens\escudo.png').convert_alpha()
+        except pygame.error as erro:
+            print(f"⚠️ [POWERUP] Falha ao carregar imagem escudo: {erro}")
         
         if tipo == 'power_up':
             self.__image = self.power_up_imagem

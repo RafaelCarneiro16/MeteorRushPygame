@@ -6,8 +6,12 @@ class Meteoro_Dourado(pygame.sprite.Sprite):
     def __init__(self, grupo, tela: Tela, jogador):
         super().__init__(grupo)
         self.__tela = tela
-        self.__jogador = jogador 
-        self.__image = pygame.image.load(r'C:\GitHub\Jogo\imagens\meteoro_dourado.png').convert_alpha()
+        self.__jogador = jogador
+        try:
+            self.__image = pygame.image.load(r'C:\GitHub\Jogo\imagens\meteoro_dourado.png').convert_alpha()
+        except pygame.error as erro:
+            print(f"⚠️ [METEORO_DOURADO] Falha ao carregar imagem do meteoro dourado: {erro}")
+            self.__image = pygame.Surface((40, 40), pygame.SRCALPHA)
         self.__rect = self.__image.get_rect()
         self.__rect.center = (random.randint(0, tela.largura), -50)
         self.__pos = pygame.Vector2(self.__rect.center)
@@ -91,5 +95,3 @@ class Meteoro_Dourado(pygame.sprite.Sprite):
             self.rect.y += 4
             if self.rect.top > 600:
                 self.kill()
-
-    

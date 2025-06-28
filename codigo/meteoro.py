@@ -11,6 +11,15 @@ class Meteoro(pygame.sprite.Sprite):
         self.__rect = self.__image.get_rect(center = (x, -50))
         self.__direcao = random.randint(-2,2)
         self.__pontos = 0
+
+        #region Pontuação 
+        if self.tamanho_imagem < 0.95:
+            self.pontos = 100  
+        elif self.tamanho_imagem < 1.15:
+            self.pontos = 50 
+        else:
+            self.pontos = 20 
+        #endregion
       
     #region Setters e Getters
     @property
@@ -52,15 +61,6 @@ class Meteoro(pygame.sprite.Sprite):
     @tamanho_imagem.setter
     def tamanho_imagem(self, valor):
         self.__tamanho_imagem = valor
-    #endregion
-
-    #region Pontuação 
-        if self.tamanho_imagem < 0.95:
-            self.pontos = 100  
-        elif self.tamanho_imagem < 1.15:
-            self.pontos = 50 
-        else:
-            self.pontos = 20 
     #endregion
 
     def update(self):

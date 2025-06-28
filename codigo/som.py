@@ -53,7 +53,10 @@ class Som():
     @volume_musica.setter
     def volume_musica(self, valor):
         self.__volume_musica = max(0.0, min(1.0, valor))
-        pygame.mixer.music.set_volume(self.__volume_musica)
+        try:
+            pygame.mixer.music.set_volume(self.__volume_musica)
+        except pygame.error as erro:
+            print(f"⚠️ [SOM] Erro pygame: {erro}")
 
     @property
     def largura_barra_volume(self):
@@ -130,27 +133,43 @@ class Som():
 
     # Atualiza o volume da música considerando o volume geral
     def atualizar_volumes(self):
-        pygame.mixer.music.set_volume(self.volume_musica * self.volume_geral)
+        try:
+            pygame.mixer.music.set_volume(self.volume_musica * self.volume_geral)
+        except pygame.error as erro:
+            print(f"⚠️ [SOM] Erro pygame: {erro}")
     
     # Toca um efeito sonoro com volume opcional
     def tocar_efeitos(self, caminho, volume=None):
-        efeito = pygame.mixer.Sound(caminho)  
-        if volume is None:
-            volume = self.__volume_efeitos  
-        efeito.set_volume(volume)        
-        efeito.play()                      
+        try:
+            efeito = pygame.mixer.Sound(caminho)
+            if volume is None:
+                volume = self.__volume_efeitos
+            efeito.set_volume(volume)
+            efeito.play()
+        except pygame.error as erro:
+            print(f"⚠️ [SOM] Erro pygame: {erro}")
+        except FileNotFoundError:
+            print(f"⚠️ [SOM] Arquivo não encontrado: {caminho}")
 
     # Carrega e toca uma música em loop com volume opcional
     def tocar_musica(self, caminho, volume=None):
-        pygame.mixer.music.load(caminho)     
-        if volume is None:
-            volume = self.__volume_musica    
-        pygame.mixer.music.set_volume(volume)
-        pygame.mixer.music.play(-1)         
+        try:
+            pygame.mixer.music.load(caminho)
+            if volume is None:
+                volume = self.__volume_musica
+            pygame.mixer.music.set_volume(volume)
+            pygame.mixer.music.play(-1)
+        except pygame.error as erro:
+            print(f"⚠️ [SOM] Erro pygame: {erro}")
+        except FileNotFoundError:
+            print(f"⚠️ [SOM] Arquivo não encontrado: {caminho}")
 
     # Para a música que estiver tocando
     def parar_musica(self):
-        pygame.mixer.music.stop()
+        try:
+            pygame.mixer.music.stop()
+        except pygame.error as erro:
+            print(f"⚠️ [SOM] Erro pygame: {erro}")
 
     # Atualiza a posição dos sliders conforme o movimento do mouse
     def atualizar_sliders(self, mouse_x):

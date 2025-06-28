@@ -4,19 +4,36 @@ from tela import Tela
 class Cenario(pygame.sprite.Group):
     def __init__(self, tela: Tela):
         super().__init__()
-        self.__tela = tela
+        try:
+            self.__tela = tela
 
-        self.__imagem_planeta = pygame.image.load(r"C:\GitHub\Jogo\imagens\planeta.png").convert_alpha()
-        self.__imagem_sol = pygame.image.load(r"C:\GitHub\Jogo\imagens\sol.png").convert_alpha()
+            try:
+                self.__imagem_planeta = pygame.image.load(r"C:\GitHub\Jogo\imagens\planeta.png").convert_alpha()
+            except pygame.error as erro_img_planeta:
+                print(f"⚠️ [CENARIO] Erro ao carregar imagem do planeta: {erro_img_planeta}")
+                self.__imagem_planeta = None
 
-        self.__sprite = pygame.sprite.Sprite()
-        self.__sprite.image = self.__imagem_planeta
-        self.__sprite.rect = self.__sprite.image.get_rect(topleft=(-999, -999))  # Fora da tela (Não aparecer)
-        self.add(self.__sprite)
+            try:
+                self.__imagem_sol = pygame.image.load(r"C:\GitHub\Jogo\imagens\sol.png").convert_alpha()
+            except pygame.error as erro_img_sol:
+                print(f"⚠️ [CENARIO] Erro ao carregar imagem do sol: {erro_img_sol}")
+                self.__imagem_sol = None
 
-        self.__mostrando = False
-        self.__modo_atual = "planeta"
-        self.__proximo_evento = pygame.time.get_ticks() + 5000  # Tempo entre o sol e o planeta
+            self.__sprite = pygame.sprite.Sprite()
+            if self.__imagem_planeta:
+                self.__sprite.image = self.__imagem_planeta
+                self.__sprite.rect = self.__sprite.image.get_rect(topleft=(-999, -999))  # Fora da tela (Não aparecer)
+            else:
+                self.__sprite.image = None
+                self.__sprite.rect = pygame.Rect(-999, -999, 0, 0)
+
+            self.add(self.__sprite)
+
+            self.__mostrando = False
+            self.__modo_atual = "planeta"
+            self.__proximo_evento = pygame.time.get_ticks() + 5000  # Tempo entre o sol e o planeta
+        except Exception as erro:
+            print(f"⚠️ [CENARIO] Erro no construtor: {erro}")
 
     # region Getters e Setters
 
@@ -79,23 +96,32 @@ class Cenario(pygame.sprite.Group):
     # endregion
 
     def update(self):
-        agora = pygame.time.get_ticks()
+        try:
+            agora = pygame.time.get_ticks()
 
-        if not self.mostrando:
-            if agora >= self.proximo_evento:
-                if self.modo_atual == "planeta":
-                    self.sprite.image = self.imagem_planeta
-                    self.sprite.rect = self.sprite.image.get_rect(topleft=(-100, -self.sprite.image.get_height()))
-                    self.modo_atual = "sol"
-                else:
-                    self.sprite.image = self.__imagem_sol
-                    self.sprite.rect = self.__sprite.image.get_rect(topleft=(680, -self.sprite.image.get_height()))
-                    self.modo_atual = "planeta"
+            if not self.mostrando:
+                if agora >= self.proximo_evento:
+                    if self.modo_atual == "planeta":
+                        if self.imagem_planeta:
+                            self.sprite.image = self.imagem_planeta
+                            self.sprite.rect = self.sprite.image.get_rect(topleft=(-100, -self.sprite.image.get_height()))
+                        else:
+                            print("⚠️ [CENARIO] Imagem do planeta não carregada.")
+                        self.modo_atual = "sol"
+                    else:
+                        if self.imagem_sol:
+                            self.sprite.image = self.imagem_sol
+                            self.sprite.rect = self.sprite.image.get_rect(topleft=(680, -self.sprite.image.get_height()))
+                        else:
+                            print("⚠️ [CENARIO] Imagem do sol não carregada.")
+                        self.modo_atual = "planeta"
 
-                self.mostrando = True
-        else:
-            self.sprite.rect.y += 1
-            if self.sprite.rect.top > self.tela.altura:
-                self.sprite.rect.topleft = (-999, -999)
-                self.mostrando = False
-                self.proximo_evento = agora + 5000
+                    self.mostrando = True
+            else:
+                self.sprite.rect.y += 1
+                if self.sprite.rect.top > self.tela.altura:
+                    self.sprite.rect.topleft = (-999, -999)
+                    self.mostrando = False
+                    self.proximo_evento = agora + 5000
+        except Exception as erro:
+            print(f"⚠️ [CENARIO] Erro no update: {erro}")

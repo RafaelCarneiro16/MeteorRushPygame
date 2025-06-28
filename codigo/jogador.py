@@ -5,22 +5,41 @@ class Jogador(pygame.sprite.Sprite):
     def __init__(self, group, tela: Tela):
         super().__init__(group)
         self.__tela = tela
-        self.__frames = [
-            pygame.image.load(rf'C:\GitHub\Jogo\imagens\nave0.png').convert_alpha(),
-            pygame.image.load(rf'C:\GitHub\Jogo\imagens\nave1.png').convert_alpha(),
-            pygame.image.load(rf'C:\GitHub\Jogo\imagens\nave2.png').convert_alpha(),
-            pygame.image.load(rf'C:\GitHub\Jogo\imagens\nave3.png').convert_alpha(),
-            pygame.image.load(rf'C:\GitHub\Jogo\imagens\nave4.png').convert_alpha()
-        ]
+        
+        try:
+            self.__frames = [
+                pygame.image.load(rf'C:\GitHub\Jogo\imagens\nave0.png').convert_alpha(),
+                pygame.image.load(rf'C:\GitHub\Jogo\imagens\nave1.png').convert_alpha(),
+                pygame.image.load(rf'C:\GitHub\Jogo\imagens\nave2.png').convert_alpha(),
+                pygame.image.load(rf'C:\GitHub\Jogo\imagens\nave3.png').convert_alpha(),
+                pygame.image.load(rf'C:\GitHub\Jogo\imagens\nave4.png').convert_alpha()
+            ]
+        except pygame.error as erro:
+            print(f"⚠️ [JOGADOR] Falha ao carregar imagens dos frames da nave: {erro}")
+            self.__frames = []
+        
         self.__indice = 0
-        self.__image = self.__frames[self.__indice]
-        self.__rect = self.__image.get_rect(center=(400, 400))
+        if self.__frames:
+            self.__image = self.__frames[self.__indice]
+            self.__rect = self.__image.get_rect(center=(400, 400))
+        else:
+            self.__image = None
+            self.__rect = pygame.Rect(400, 400, 50, 50)  # fallback retângulo
+
         self.__tempo_animacao = 5
         self.__contador = 0
-        self.__vento = pygame.image.load(rf'C:\GitHub\Jogo\imagens\vento.png').convert_alpha()
-        self.__vento_rect = self.__vento.get_rect(center=self.__rect.center)
+
+        try:
+            self.__vento = pygame.image.load(rf'C:\GitHub\Jogo\imagens\vento.png').convert_alpha()
+            self.__vento_rect = self.__vento.get_rect(center=self.__rect.center)
+        except pygame.error as erro:
+            print(f"⚠️ [JOGADOR] Falha ao carregar imagem do vento: {erro}")
+            self.__vento = None
+            self.__vento_rect = pygame.Rect(0, 0, 0, 0)
+
         self.__subindo = False
         self.__tiro_triplo = False
+
        
     # region Getters e Setters
     @property

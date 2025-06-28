@@ -4,24 +4,37 @@ from tela import Tela
 class Explosao(pygame.sprite.Sprite):
     def __init__(self, group, tela: Tela, posicao):
         super().__init__(group)
-        self.__tela = tela
-        self.__sprites = pygame.image.load(r'C:\GitHub\Jogo\imagens\explosao.png').convert_alpha()
-        self.__frames = []
+        try:
+            self.__tela = tela
+            try:
+                self.__sprites = pygame.image.load(r'C:\GitHub\Jogo\imagens\explosao.png').convert_alpha()
+            except pygame.error as erro_img:
+                print(f"⚠️ [EXPLOSAO] Erro ao carregar imagem: {erro_img}")
+                self.__sprites = None
 
-        for i in range(4):
-            frame = pygame.Surface((60, 60), pygame.SRCALPHA)
-            frame.blit(self.__sprites, (0, 0), (i * 60, 0, 60, 60))
-            self.__frames.append(frame)
+            self.__frames = []
+            if self.__sprites:
+                for i in range(4):
+                    frame = pygame.Surface((60, 60), pygame.SRCALPHA)
+                    frame.blit(self.__sprites, (0, 0), (i * 60, 0, 60, 60))
+                    self.__frames.append(frame)
+            else:
+                print("⚠️ [EXPLOSAO] Sprites não carregados, frames vazios.")
+            
+            self.__indice = 0
+            if self.__frames:
+                self.image = self.__frames[self.__indice]
+                self.rect = self.image.get_rect(center=posicao)
+            else:
+                self.image = None
+                self.rect = pygame.Rect(posicao[0], posicao[1], 60, 60)
 
-        self.__indice = 0
-        self.image = self.__frames[self.__indice]
-        self.rect = self.image.get_rect(center=posicao)
-
-        self.__tempo_animacao = 3
-        self.__contador = 0
+            self.__tempo_animacao = 3
+            self.__contador = 0
+        except Exception as erro:
+            print(f"⚠️ [EXPLOSAO] Erro no construtor: {erro}")
 
     # region Getters e Setters
-
     @property
     def tela(self):
         return self.__tela
@@ -69,16 +82,18 @@ class Explosao(pygame.sprite.Sprite):
     @contador.setter
     def contador(self, valor):
         self.__contador = valor
-
     # endregion
 
     def update(self):
-        self.contador += 1
-        if self.contador >= self.tempo_animacao:
-            self.contador = 0
-            self.indice += 1
+        try:
+            self.contador += 1
+            if self.contador >= self.tempo_animacao:
+                self.contador = 0
+                self.indice += 1
 
-            if self.indice >= len(self.frames):
-                self.kill()  
-            else:
-                self.image = self.frames[self.indice]
+                if self.indice >= len(self.frames):
+                    self.kill()
+                else:
+                    self.image = self.frames[self.indice]
+        except Exception as erro:
+            print(f"⚠️ [EXPLOSAO] Erro no update: {erro}")

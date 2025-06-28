@@ -4,7 +4,11 @@ from tiro import Tiro
 class Ovni(pygame.sprite.Sprite):
     def __init__(self, grupo, imagem, posicao, grupo_tiros : pygame.sprite.Group, jogador):
         super().__init__(grupo)
-        self.__image = pygame.image.load(imagem).convert_alpha()
+        try:
+            self.__image = pygame.image.load(imagem).convert_alpha()
+        except pygame.error as erro:
+            print(f"⚠️ [OVNI] Falha ao carregar imagem do OVNI: {erro}")
+            self.__image = pygame.Surface((50, 30), pygame.SRCALPHA)
         self.__rect = self.__image.get_rect(center=posicao)
         self.__velocidade_x = 3
         self.__direcao = 1
@@ -20,7 +24,10 @@ class Ovni(pygame.sprite.Sprite):
 
     @image.setter
     def image(self, nova_imagem):
-        self.__image = pygame.image.load(nova_imagem).convert_alpha()
+        try:
+            self.__image = pygame.image.load(nova_imagem).convert_alpha()
+        except pygame.error as erro:
+            print(f"⚠️ [OVNI] Falha ao carregar nova imagem do OVNI: {erro}")
 
     @property
     def rect(self):
@@ -95,4 +102,7 @@ class Ovni(pygame.sprite.Sprite):
 
     def atirar(self):
         posicao_tiro = self.rect.midbottom
-        tiro = Tiro((posicao_tiro), self.grupo_tiros, direcao = -1, caminho_imagem = rf"C:\GitHub\Jogo\imagens\tiro_inimigo.png")
+        try:
+            tiro = Tiro(posicao_tiro, self.grupo_tiros, direcao = -1, caminho_imagem = rf"C:\GitHub\Jogo\imagens\tiro_inimigo.png")
+        except Exception as erro:
+            print(f"⚠️ [OVNI] Erro ao criar tiro: {erro}")
