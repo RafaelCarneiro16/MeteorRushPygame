@@ -14,7 +14,7 @@ class Meteoro_Dourado(pygame.sprite.Sprite):
             self.__image = pygame.Surface((40, 40), pygame.SRCALPHA)
         self.__rect = self.__image.get_rect()
         self.__rect.center = (random.randint(0, tela.largura), -50)
-        self.__pos = pygame.Vector2(self.__rect.center)
+        self.__pos = pygame.Vector2(self.rect.center)
         self.__pontos = 500 
         self.__seguindo = True
 

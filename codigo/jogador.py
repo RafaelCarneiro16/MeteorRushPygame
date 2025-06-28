@@ -20,8 +20,8 @@ class Jogador(pygame.sprite.Sprite):
         
         self.__indice = 0
         if self.__frames:
-            self.__image = self.__frames[self.__indice]
-            self.__rect = self.__image.get_rect(center=(400, 400))
+            self.__image = self.frames[self.indice]
+            self.__rect = self.image.get_rect(center=(400, 400))
         else:
             self.__image = None
             self.__rect = pygame.Rect(400, 400, 50, 50)  # fallback retângulo
@@ -31,7 +31,7 @@ class Jogador(pygame.sprite.Sprite):
 
         try:
             self.__vento = pygame.image.load(rf'C:\GitHub\Jogo\imagens\vento.png').convert_alpha()
-            self.__vento_rect = self.__vento.get_rect(center=self.__rect.center)
+            self.__vento_rect = self.vento.get_rect(center=self.rect.center)
         except pygame.error as erro:
             print(f"⚠️ [JOGADOR] Falha ao carregar imagem do vento: {erro}")
             self.__vento = None
@@ -39,8 +39,7 @@ class Jogador(pygame.sprite.Sprite):
 
         self.__subindo = False
         self.__tiro_triplo = False
-
-       
+  
     # region Getters e Setters
     @property
     def tela(self):

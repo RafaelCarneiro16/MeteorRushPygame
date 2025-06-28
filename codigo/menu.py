@@ -7,6 +7,8 @@ from som import Som
 from texto import Texto
 from jogador_ranking import JogadorRanking
 from gerenciador_raking import GerenciadorRanking
+from gerenciador_progresso import GerenciadorProgresso
+from vidas import Vidas
 
 class Menu():
     def __init__(self, jogo: Jogo):
@@ -14,12 +16,13 @@ class Menu():
         self.__tela = Tela(800, 600, 'C:/GitHub/Jogo/imagens/fundo2.png')
         self.__jogo = jogo
         self.__grupo_botoes = pygame.sprite.Group()
+        self.__gerenciador_progresso = GerenciadorProgresso()
         try:
             self.__logo_jogo = pygame.image.load('C:/GitHub/Jogo/imagens/icone_nome_jogo.png').convert_alpha()
         except pygame.error as erro:
             print(f"⚠️ [MENU] Falha ao carregar a imagem do logo: {erro}")
             self.__logo_jogo = pygame.Surface((200, 100), pygame.SRCALPHA)
-        self.__logo_rect = self.__logo_jogo.get_rect(center = (400, 125))
+        self.__logo_rect = self.logo_jogo.get_rect(center = (400, 125))
         self.__som = Som()
         self.__ranking = GerenciadorRanking()
         self.__ranking.carregar_de_arquivo("ranking.json")
@@ -30,8 +33,8 @@ class Menu():
             print(f"⚠️ [MENU] Falha ao carregar fonte: {erro}")
             self.__fonte = pygame.font.SysFont(None, 24)
             
-        self.__texto_titulo = Texto(48, "Gerenciador de Som", (255,255,255), (self.__tela.largura // 2, 50), self.__tela)
-        self.__texto_instrucao = Texto(24, "Pressione ESC para voltar ao menu principal", (255,255,255), (self.__tela.largura // 2, self.__tela.altura - 30), self.__tela)
+        self.__texto_titulo = Texto(48, "Gerenciador de Som", (255,255,255), (self.tela.largura // 2, 50), self.tela)
+        self.__texto_instrucao = Texto(24, "Pressione ESC para voltar ao menu principal", (255,255,255), (self.tela.largura // 2, self.tela.altura - 30), self.tela)
 
     # region Getters e Setters
     @property
@@ -121,6 +124,15 @@ class Menu():
     @texto_instrucao.setter
     def texto_instrucao(self, value):
         self.__texto_instrucao = value
+
+    @property
+    def gerenciador_progresso(self):
+        return self.__gerenciador_progresso
+    
+    @gerenciador_progresso.setter
+    def gerenciador_progresso(self, valor):
+        self.__gerenciador_progresso = valor
+
     # endregion
 
     def desenha_menu(self):
@@ -171,6 +183,20 @@ class Menu():
                 if botao_ranking.rect.collidepoint(mouse_pos):
                     self.som.tocar_efeitos(r"C:\GitHub\Jogo\sons\clique.mp3")
                     self.exibir_ranking()
+
+                if botao_continuar.rect.collidepoint(mouse_pos):
+                    self.som.tocar_efeitos(r"C:\GitHub\Jogo\sons\clique_inicio.wav")
+                    progresso = self.gerenciador_progresso.carregar_progresso()
+                    
+                    if progresso:
+                        self.som.parar_musica()
+                        self.jogo.novo_jogo(
+                            pontuacao=progresso.get("pontuacao", 0),
+                            vidas=progresso.get("vidas", 3)
+                        )
+                        rodando_menu = False
+                    else:
+                        print("⚠️ Nenhum progresso para continuar.")
 
             pygame.display.update()
             self.clock.tick(60)

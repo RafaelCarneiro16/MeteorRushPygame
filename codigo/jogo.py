@@ -14,6 +14,7 @@ from cenario import Cenario
 from explosao import Explosao
 from powerups import PowerUp
 from ovni import Ovni
+from gerenciador_progresso import GerenciadorProgresso
 
 class Jogo():
     def __init__(self):
@@ -28,7 +29,9 @@ class Jogo():
         self.__grupo_meteoros_dourados = pygame.sprite.Group()
         self.__ranking = GerenciadorRanking()
         self.__ranking.carregar_de_arquivo("ranking.json")
+        self.__gerenciador_progresso = GerenciadorProgresso()
         self.__cenario = Cenario(self.__tela)
+        self.__tempo_decorrido = 0
         self.__grupo_explosoes = pygame.sprite.Group()
         self.__grupo_powerup = pygame.sprite.Group()
         self.__grupo_pause = pygame.sprite.GroupSingle()
@@ -41,6 +44,14 @@ class Jogo():
         self.evento_ovni = pygame.USEREVENT + 3
 
     #region Setters e Getters
+    @property
+    def tempo_decorrido(self):
+        return self.__tempo_decorrido
+
+    @tempo_decorrido.setter
+    def tempo_decorrido(self, valor):
+        self.__tempo_decorrido = valor
+    
     @property
     def cenario(self):
         return self.__cenario
@@ -192,23 +203,33 @@ class Jogo():
     def grupo_tiros_inimigos(self, value):
         self.__grupo_tiros_inimigos = value
 
+    @property
+    def gerenciador_progresso(self):
+        return self.__gerenciador_progresso
+    
+    @gerenciador_progresso.setter
+    def gerencaidor_progresso(self, valor):
+        self.__gerenciador_progresso = valor
 
     #endregion
 
-    def novo_jogo(self):
+    def novo_jogo(self, pontuacao=0, vidas=3):
+        # Apaga o progresso salvo para começar do zero
+        self.gerenciador_progresso.deletar_progresso()
+
         self.grupo_meteoros.empty()
         self.grupo_meteoros_dourados.empty()
         self.grupo_powerup.empty()
         self.grupo_tiros.empty()
         self.jogador.rect.center = (400,400)
         self.lista_vidas = []
-        self.pontuacao = 0
+        self.pontuacao = pontuacao
         self.jogador.tiro_triplo = False
         self.grupo_meteoros_dourados.empty()
         self.grupo_ovnis.empty()
         self.grupo_tiros_inimigos.empty()
             
-        for i in range(3):
+        for i in range(vidas):
             x = self.tela.largura - (i * (40+5))
             vida = Vidas(self.grupo_vidas, x)
             self.lista_vidas.append(vida)
@@ -274,10 +295,9 @@ class Jogo():
 
         grupo_botoes = pygame.sprite.Group()
         pausado = True
-        titulo = Botao(grupo_botoes, rf'C:\GitHub\Jogo\imagens\titulo_jogo_pausado.png', (400, 100))
-        botao_voltar = Botao(grupo_botoes, rf'C:\GitHub\Jogo\imagens\bt_voltar_ao_jogo.png', (400, 200))
-        botao_menu = Botao(grupo_botoes, rf'C:\GitHub\Jogo\imagens\bt_menu_principal.png', (400, 320))
-        botao_sair = Botao(grupo_botoes, rf'C:\GitHub\Jogo\imagens\bt_salvar_sair.png', (400, 440))
+        titulo = Botao(grupo_botoes, rf'C:\GitHub\Jogo\imagens\titulo_jogo_pausado.png', (400, 150))
+        botao_voltar = Botao(grupo_botoes, rf'C:\GitHub\Jogo\imagens\bt_voltar_ao_jogo.png', (400, 250))
+        botao_sair = Botao(grupo_botoes, rf'C:\GitHub\Jogo\imagens\bt_salvar_sair.png', (400, 370))
 
         fundo_transparente = pygame.Surface((800,600))
         fundo_transparente.set_alpha(120)
@@ -294,14 +314,15 @@ class Jogo():
                     exit()
 
             if mouse_botao[0]:
-                if botao_menu.rect.collidepoint(mouse_pos):
-                    self.som.tocar_efeitos(r"C:\GitHub\Jogo\sons\clique.mp3")
-                    return False
-                elif botao_voltar.rect.collidepoint(mouse_pos):
+                if botao_voltar.rect.collidepoint(mouse_pos):
                     self.som.tocar_efeitos(r"C:\GitHub\Jogo\sons\clique.mp3")
                     return True
                 elif botao_sair.rect.collidepoint(mouse_pos):
                     self.som.tocar_efeitos(r"C:\GitHub\Jogo\sons\clique.mp3")
+                    self.gerenciador_progresso.salvar_progresso(
+                    pontuacao=self.pontuacao,
+                    vidas=len(self.lista_vidas)
+                    )
                     pygame.quit()
                     exit()
 
@@ -311,7 +332,7 @@ class Jogo():
             grupo_botoes.draw(self.tela.display)
 
             pygame.display.update()
-            self.clock.tick(15)
+            self.clock.tick(60)
 
     def game_over(self, pontuacao): 
         grupo_botoes = pygame.sprite.Group()
@@ -324,6 +345,9 @@ class Jogo():
         nome = self.ranking.solicitar_nome(self.__tela, self.__clock, botao_game_over)
         self.ranking.adicionar_jogador(JogadorRanking(nome, pontuacao)) 
         self.ranking.salvar_em_arquivo("ranking.json")
+
+        # Apaga o progresso ao perder todas as vidas
+        self.gerenciador_progresso.deletar_progresso()
       
         while pausado:
             mouse_pos = pygame.mouse.get_pos()
@@ -409,6 +433,7 @@ class Jogo():
                     self.som.tocar_efeitos(r"C:\GitHub\Jogo\sons\explosion.wav")
                     Explosao(self.grupo_explosoes, self.tela, ovni.rect.center)
                     ovni.kill()
+                    self.pontuacao += 1000
                     self.ovni_ativo = False
                     pygame.time.set_timer(self.evento_ovni, 8000, loops=1)
 

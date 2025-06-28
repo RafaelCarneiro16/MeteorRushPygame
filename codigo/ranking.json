@@ -1,22 +1,42 @@
 [
     {
+        "nome": "JAQUELINE",
+        "pontuacao": 10000000
+    },
+    {
+        "nome": "Teste",
+        "pontuacao": 35510
+    },
+    {
+        "nome": "RAFAEL",
+        "pontuacao": 30240
+    },
+    {
+        "nome": "RAFAEL",
+        "pontuacao": 24650
+    },
+    {
+        "nome": "RAFAEL",
+        "pontuacao": 22440
+    },
+    {
         "nome": "ALAN CARNEIRO",
         "pontuacao": 19570
+    },
+    {
+        "nome": "Rafael",
+        "pontuacao": 17460
     },
     {
         "nome": "ZEQUINHA",
         "pontuacao": 14000
     },
     {
-        "nome": "Rafael",
-        "pontuacao": 5000
+        "nome": "JORGELAFON",
+        "pontuacao": 11590
     },
     {
-        "nome": " d",
-        "pontuacao": 4120
-    },
-    {
-        "nome": "PAPA",
-        "pontuacao": 1360
+        "nome": " RAFAEL",
+        "pontuacao": 9380
     }
 ]

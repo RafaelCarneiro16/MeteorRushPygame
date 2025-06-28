@@ -9,7 +9,7 @@ class Ovni(pygame.sprite.Sprite):
         except pygame.error as erro:
             print(f"⚠️ [OVNI] Falha ao carregar imagem do OVNI: {erro}")
             self.__image = pygame.Surface((50, 30), pygame.SRCALPHA)
-        self.__rect = self.__image.get_rect(center=posicao)
+        self.__rect = self.image.get_rect(center=posicao)
         self.__velocidade_x = 3
         self.__direcao = 1
         self.__grupo_tiros = grupo_tiros
@@ -17,7 +17,7 @@ class Ovni(pygame.sprite.Sprite):
         self.__tempo_ultimo_tiro = pygame.time.get_ticks()
         self.__delay_tiro = 1500
         self.__vida = 3
-        self.__imagem_original = self.__image.copy()
+        self.__imagem_original = self.image.copy()
         self.__tempo_dano = 0
         self.__dano_duracao = 200
 
@@ -132,7 +132,7 @@ class Ovni(pygame.sprite.Sprite):
             self.atirar()
             self.tempo_ultimo_tiro = agora
         
-        if pygame.time.get_ticks() - self.__tempo_dano >= self.__dano_duracao:
+        if pygame.time.get_ticks() - self.tempo_dano >= self.dano_duracao:
             self.__image = self.__imagem_original
 
     def atirar(self):
@@ -149,9 +149,9 @@ class Ovni(pygame.sprite.Sprite):
 
     def levar_dano(self):
         self.vida -= 1
-        self.__tempo_dano = pygame.time.get_ticks()
+        self.tempo_dano = pygame.time.get_ticks()
         
         # Cria uma imagem vermelha temporária
-        imagem_vermelha = self.__imagem_original.copy()
+        imagem_vermelha = self.imagem_original.copy()
         imagem_vermelha.fill((255, 0, 0, 100), special_flags=pygame.BLEND_RGBA_MULT)
         self.__image = imagem_vermelha

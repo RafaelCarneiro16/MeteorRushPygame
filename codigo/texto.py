@@ -9,12 +9,12 @@ class Texto:
             self.__texto_str = texto
             self.__tela = tela
             try:
-                self.__fonte = pygame.font.Font(r'C:\GitHub\Jogo\fonte.ttf', self.__tamanho)
+                self.__fonte = pygame.font.Font(r'C:\GitHub\Jogo\fonte.ttf', self.tamanho)
             except Exception as erro_fonte:
                 print(f"⚠️ [TEXTO] Erro ao carregar fonte: {erro_fonte}")
-                self.__fonte = pygame.font.SysFont(None, self.__tamanho)  # Fonte padrão
-            self.__texto = self.__fonte.render(self.__texto_str, True, self.__cor)
-            self.__rect = self.__texto.get_rect(center=posicao)
+                self.__fonte = pygame.font.SysFont(None, self.tamanho)  # Fonte padrão
+            self.__texto = self.fonte.render(self.texto_str, True, self.__cor)
+            self.__rect = self.texto.get_rect(center=posicao)
         except Exception as erro:
             print(f"⚠️ [TEXTO] Erro ao inicializar texto: {erro}")
             self.__texto = None

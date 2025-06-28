@@ -23,11 +23,11 @@ class Explosao(pygame.sprite.Sprite):
             
             self.__indice = 0
             if self.__frames:
-                self.image = self.__frames[self.__indice]
-                self.rect = self.image.get_rect(center=posicao)
+                self.__image = self.frames[self.indice]
+                self.__rect = self.image.get_rect(center=posicao)
             else:
-                self.image = None
-                self.rect = pygame.Rect(posicao[0], posicao[1], 60, 60)
+                self.__image = None
+                self.__rect = pygame.Rect(posicao[0], posicao[1], 60, 60)
 
             self.__tempo_animacao = 3
             self.__contador = 0
@@ -35,6 +35,22 @@ class Explosao(pygame.sprite.Sprite):
             print(f"⚠️ [EXPLOSAO] Erro no construtor: {erro}")
 
     # region Getters e Setters
+    @property
+    def rect(self):
+        return self.__rect
+
+    @rect.setter
+    def rect(self, valor):
+        self.__rect = valor
+
+    @property
+    def image(self):
+        return self.__image
+
+    @image.setter
+    def image(self, valor):
+        self.__image = valor
+
     @property
     def tela(self):
         return self.__tela
