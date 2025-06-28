@@ -16,16 +16,15 @@ from powerups import PowerUp
 from ovni import Ovni
 
 class Jogo():
-    def __init__(self, tela: Tela, jogador: Jogador, grupo_jogador : pygame.sprite.Group, som: Som):
-
-        self.__tela = tela
-        self.__jogador = jogador
-        self.__grupo_jogador = grupo_jogador
+    def __init__(self):
+        self.__tela = Tela(800, 600, r'C:/GitHub/Jogo/imagens/fundo.png')
+        self.__grupo_jogador = pygame.sprite.GroupSingle()
+        self.__jogador = Jogador(self.__grupo_jogador, self.__tela)
         self.__grupo_vidas = pygame.sprite.Group()
         self.__grupo_meteoros = pygame.sprite.Group()
         self.__grupo_tiros = pygame.sprite.Group()
         self.__clock = pygame.time.Clock()
-        self.__som = som
+        self.__som = Som()
         self.__grupo_meteoros_dourados = pygame.sprite.Group()
         self.__ranking = GerenciadorRanking()
         self.__ranking.carregar_de_arquivo("ranking.json")
@@ -38,6 +37,8 @@ class Jogo():
         self.__pontuacao = 0
         self.__grupo_ovnis = pygame.sprite.Group()
         self.__grupo_tiros_inimigos = pygame.sprite.Group()
+        self.ovni_ativo = False
+        self.evento_ovni = pygame.USEREVENT + 3
 
     #region Setters e Getters
     @property
@@ -206,9 +207,7 @@ class Jogo():
         self.grupo_meteoros_dourados.empty()
         self.grupo_ovnis.empty()
         self.grupo_tiros_inimigos.empty()
-        
-        ovni = Ovni(self.grupo_ovnis, rf"C:\GitHub\Jogo\imagens\ovni.png", (random.randint(100, 700), 100), self.grupo_tiros_inimigos, self.jogador)
-          
+            
         for i in range(3):
             x = self.tela.largura - (i * (40+5))
             vida = Vidas(self.grupo_vidas, x)
@@ -221,10 +220,9 @@ class Jogo():
         evento_meteoro_dourado = pygame.USEREVENT + 2
         pygame.time.set_timer(evento_meteoro, 250)
         pygame.time.set_timer(evento_meteoro_dourado, 2000)
+        pygame.time.set_timer(self.evento_ovni, 1000, loops=1)
 
         rodando = True
-
-        # Som
         self.som.tocar_musica(rf"C:\GitHub\Jogo\sons\musica_jogo.wav")
 
         while rodando:
@@ -237,7 +235,6 @@ class Jogo():
                     resultado = self.pause()
                     if not resultado:
                         return
-
 
             resultadocolisoes = self.colisoes()
             if resultadocolisoes:
@@ -364,7 +361,7 @@ class Jogo():
                 pontuacao += meteoro.pontos
                 self.som.tocar_efeitos(r"C:\GitHub\Jogo\sons\explosion.wav")
                 Explosao(self.grupo_explosoes, self.tela, meteoro.rect.center)
-                if power_up:
+                if power_up and random.random() <= 0.3:
                       PowerUp('power_up', self.grupo_powerup, meteoro.rect.center, self.tela, self.jogador)
         
         return pontuacao
@@ -391,21 +388,34 @@ class Jogo():
                         self.som.tocar_efeitos(rf"C:\GitHub\Jogo\sons\laser.wav")
                         
             elif evento.type == evento_meteoro:
-                    x = random.randint(0, self.tela.largura - 50)
-                    Meteoro(x, self.grupo_meteoros)
+                x = random.randint(0, self.tela.largura - 50)
+                Meteoro(x, self.grupo_meteoros)
 
             elif evento.type == evento_meteoro_dourado:
-                    x = random.randint(0, self.tela.largura - 50)
-                    Meteoro_Dourado(self.grupo_meteoros_dourados, self.tela ,self.jogador)
-                    
+                x = random.randint(0, self.tela.largura - 50)
+                Meteoro_Dourado(self.grupo_meteoros_dourados, self.tela ,self.jogador)
+            
+            elif evento.type == self.evento_ovni and not self.ovni_ativo:
+                Ovni(self.grupo_ovnis, rf"C:\GitHub\Jogo\imagens\ovni.png", (random.randint(100, 700), 100), self.grupo_tiros_inimigos, self.jogador)
+                self.ovni_ativo = True
+
     def colisoes(self):
+        colisao_ovnis = pygame.sprite.groupcollide(self.grupo_tiros, self.grupo_ovnis, True, True)
+        for tiros, ovnis_acertados in colisao_ovnis.items():
+            for ovni in ovnis_acertados:
+                self.som.tocar_efeitos(r"C:\GitHub\Jogo\sons\explosion.wav")
+                Explosao(self.grupo_explosoes, self.tela, ovni.rect.center)
+                self.ovni_ativo = False
+                pygame.time.set_timer(self.evento_ovni, 8000, loops=1) 
+
         colisao_powerup = pygame.sprite.spritecollide(self.jogador, self.grupo_powerup, False)
         for powerup in colisao_powerup:
             if powerup.tipo == 'power_up':
                 powerup.kill()
                 powerup_ativo = any(p.tipo in ['escudo', 'tiro_triplo'] for p in self.grupo_powerup)
-
+                
                 if not powerup_ativo:
+                    self.som.tocar_efeitos(r"C:\GitHub\Jogo\sons\power_up.wav")
                     escolhido = random.choice(['escudo', 'tiro_triplo'])
                     PowerUp(escolhido, self.grupo_powerup, self.jogador.rect.center, self.tela, self.jogador)
 
@@ -414,9 +424,12 @@ class Jogo():
         if escudo_ativo:
             pygame.sprite.spritecollide(escudo_ativo, self.grupo_meteoros, True)
             pygame.sprite.spritecollide(escudo_ativo, self.grupo_meteoros_dourados, True)
+            pygame.sprite.spritecollide(escudo_ativo, self.grupo_tiros_inimigos, True)
+
         else:
             colisao_jogador_m = pygame.sprite.spritecollide(self.jogador, self.grupo_meteoros, True)
             colisao_jogador_md = pygame.sprite.spritecollide(self.jogador, self.grupo_meteoros_dourados, True)
+            colisao_tiro_jogador = pygame.sprite.spritecollide(self.jogador, self.grupo_tiros_inimigos, True)
 
             if colisao_jogador_m or colisao_jogador_md:
                 self.som.tocar_efeitos(r"C:\GitHub\Jogo\sons\hit.wav")
@@ -428,20 +441,18 @@ class Jogo():
                         self.som.tocar_efeitos(r"C:\GitHub\Jogo\sons\game_over_efeito.wav")
                         self.game_over(self.pontuacao)
                         return True
-        
-        colisao_tiro_jogador = pygame.sprite.spritecollide(self.jogador, self.grupo_tiros_inimigos, True)
 
-        for tiro in colisao_tiro_jogador:
-            self.som.tocar_efeitos(rf"C:\GitHub\Jogo\sons\hit.wav")
-            if self.lista_vidas:
-                vida_perdida = self.lista_vidas.pop()
-                vida_perdida.kill()
-            if not self.lista_vidas:
-                self.som.parar_musica()
-                self.som.tocar_efeitos(rf"C:\GitHub\Jogo\sons\game_over_efeito.wav")
-                self.game_over(self.pontuacao)
-                return True                
-
+            for tiro in colisao_tiro_jogador:
+                self.som.tocar_efeitos(r"C:\GitHub\Jogo\sons\hit.wav")
+                if self.lista_vidas:
+                    vida_perdida = self.lista_vidas.pop()
+                    vida_perdida.kill()
+                    if not self.lista_vidas:
+                        self.som.parar_musica()
+                        self.som.tocar_efeitos(r"C:\GitHub\Jogo\sons\game_over_efeito.wav")
+                        self.game_over(self.pontuacao)
+                        return True        
+                        
     def updates(self):
         self.grupo_jogador.update()
         self.grupo_tiros.update()
