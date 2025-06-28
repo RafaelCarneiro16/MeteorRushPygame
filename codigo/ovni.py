@@ -88,12 +88,7 @@ class Ovni(pygame.sprite.Sprite):
     #endregion
 
     def update(self):
-        # Movimento horizontal
-        self.rect.x += self.velocidade_x * self.direcao
-
-        if self.rect.right >= 800 or self.rect.left <= 0:
-            self.direcao *= -1
-
+        self.seguir_jogador()
         # Disparo com intervalo
         agora = pygame.time.get_ticks()
         if agora - self.tempo_ultimo_tiro >= self.delay_tiro:
@@ -106,3 +101,8 @@ class Ovni(pygame.sprite.Sprite):
             tiro = Tiro(posicao_tiro, self.grupo_tiros, direcao = -1, caminho_imagem = rf"C:\GitHub\Jogo\imagens\tiro_inimigo.png")
         except Exception as erro:
             print(f"⚠️ [OVNI] Erro ao criar tiro: {erro}")
+
+    def seguir_jogador(self):
+        diferenca = self.jogador.rect.centerx - self.rect.centerx
+        if abs(diferenca) > 1:
+           self.rect.x += self.velocidade_x if diferenca > 0 else -self.velocidade_x
