@@ -96,6 +96,31 @@ class Ovni(pygame.sprite.Sprite):
     @vida.setter
     def vida(self, nova_vida):
         self.__vida = nova_vida
+        
+
+    @property
+    def tempo_dano(self):
+        return self.__tempo_dano
+
+    @tempo_dano.setter
+    def tempo_dano(self, novo_tempo):
+        self.__tempo_dano = novo_tempo
+
+    @property
+    def dano_duracao(self):
+        return self.__dano_duracao
+
+    @dano_duracao.setter
+    def dano_duracao(self, nova_duracao):
+        self.__dano_duracao = nova_duracao
+
+    @property
+    def imagem_original(self):
+        return self.__imagem_original
+
+    @imagem_original.setter
+    def imagem_original(self, nova_imagem):
+        self.__imagem_original = nova_imagem
 
     #endregion
 
