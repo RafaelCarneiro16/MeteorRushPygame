@@ -39,8 +39,6 @@ class Jogo():
         self.__grupo_ovnis = pygame.sprite.Group()
         self.__grupo_tiros_inimigos = pygame.sprite.Group()
 
-
-
     #region Setters e Getters
     @property
     def cenario(self):
@@ -224,11 +222,6 @@ class Jogo():
         pygame.time.set_timer(evento_meteoro, 250)
         pygame.time.set_timer(evento_meteoro_dourado, 2000)
 
-        # Posições do fundo animado
-        y1 = 0
-        y2 = -self.tela.altura
-        velocidade_fundo = 2
-
         rodando = True
 
         # Som
@@ -245,14 +238,6 @@ class Jogo():
                     if not resultado:
                         return
 
-            # Atualizar posição do fundo
-            y1 += velocidade_fundo
-            y2 += velocidade_fundo
-
-            if y1 >= self.tela.altura:
-                y1 = -self.tela.altura
-            if y2 >= self.tela.altura:
-                y2 = -self.tela.altura
 
             resultadocolisoes = self.colisoes()
             if resultadocolisoes:
@@ -264,10 +249,8 @@ class Jogo():
             # Atualizações dos grupos
             self.updates()
             
-
-            # Desenhar fundo com rolagem
-            self.tela.display.blit(self.tela.imagem_fundo, (0, y1))
-            self.tela.display.blit(self.tela.imagem_fundo, (0, y2))
+            # Atualizar e desenhar o fundo animado
+            self.tela.fundo_mover()
 
             # Atualizar e desenhar o cenário 
             self.cenario.update()
@@ -470,7 +453,6 @@ class Jogo():
         self.grupo_pause.update()
         self.grupo_ovnis.update()
         self.grupo_tiros_inimigos.update()
-
 
     def desenhos(self):
         self.grupo_jogador.draw(self.tela.display)

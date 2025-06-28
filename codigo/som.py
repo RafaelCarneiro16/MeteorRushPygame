@@ -1,4 +1,5 @@
-import pygame  
+import pygame 
+from texto import Texto
 
 class Som():
     def __init__(self):
@@ -8,7 +9,6 @@ class Som():
         self.__volume_musica = 0.5         
         self.__volume_geral = 1.0     
          
-        # Volume
         self.__largura_barra_volume = 200
         self.__altura_barra_volume = 10
         self.__x_barra_volume = 300
@@ -17,14 +17,11 @@ class Som():
         self.__arrastando_musica = False
         self.__arrastando_efeitos = False
 
-        # Cursor de volume música
         self.__cursor_musica = pygame.Rect(
             self.x_barra_volume + int(self.volume_musica * self.largura_barra_volume) - 5,
             self.y_barra_musica - 5,
             10, 20
         )
-
-        # Cursor de volume efeitos
         self.__cursor_efeitos = pygame.Rect(
             self.x_barra_volume + int(self.volume_efeitos * self.largura_barra_volume) - 5,
             self.y_barra_efeitos - 5,
@@ -32,7 +29,6 @@ class Som():
         )
     
     # region Getters e Setters
-   
     @property
     def volume_geral(self):
         return self.__volume_geral
@@ -130,13 +126,13 @@ class Som():
     @cursor_efeitos.setter
     def cursor_efeitos(self, valor):
         self.__cursor_efeitos = valor
-
-     # Comentario usado para minimizar Setters e Getters
     # endregion
 
+    # Atualiza o volume da música considerando o volume geral
     def atualizar_volumes(self):
         pygame.mixer.music.set_volume(self.volume_musica * self.volume_geral)
     
+    # Toca um efeito sonoro com volume opcional
     def tocar_efeitos(self, caminho, volume=None):
         efeito = pygame.mixer.Sound(caminho)  
         if volume is None:
@@ -144,6 +140,7 @@ class Som():
         efeito.set_volume(volume)        
         efeito.play()                      
 
+    # Carrega e toca uma música em loop com volume opcional
     def tocar_musica(self, caminho, volume=None):
         pygame.mixer.music.load(caminho)     
         if volume is None:
@@ -151,5 +148,78 @@ class Som():
         pygame.mixer.music.set_volume(volume)
         pygame.mixer.music.play(-1)         
 
+    # Para a música que estiver tocando
     def parar_musica(self):
         pygame.mixer.music.stop()
+
+    # Atualiza a posição dos sliders conforme o movimento do mouse
+    def atualizar_sliders(self, mouse_x):
+        if self.arrastando_musica:
+            self.cursor_musica.centerx = max(
+                self.x_barra_volume,
+                min(mouse_x, self.x_barra_volume + self.largura_barra_volume)
+            )
+            novo_volume = (self.cursor_musica.centerx - self.x_barra_volume) / self.largura_barra_volume
+            self.volume_musica = novo_volume
+
+        if self.arrastando_efeitos:
+            self.cursor_efeitos.centerx = max(
+                self.x_barra_volume,
+                min(mouse_x, self.x_barra_volume + self.largura_barra_volume)
+            )
+            novo_volume = (self.cursor_efeitos.centerx - self.x_barra_volume) / self.largura_barra_volume
+            self.volume_efeitos = novo_volume
+            self.atualizar_volumes()
+
+    # Exibe o menu de volume com sliders interativos para música e efeitos
+    def exibir_menu_volume(self, tela, clock, texto_titulo, texto_instrucao):
+        rodando = True
+
+        while rodando:
+            for evento in pygame.event.get():
+                if evento.type == pygame.QUIT:
+                    pygame.quit()
+                    exit()
+                elif evento.type == pygame.KEYDOWN and evento.key == pygame.K_ESCAPE:
+                    rodando = False
+                elif evento.type == pygame.MOUSEBUTTONDOWN:
+                    if self.cursor_musica.collidepoint(pygame.mouse.get_pos()):
+                        self.arrastando_musica = True
+                    if self.cursor_efeitos.collidepoint(pygame.mouse.get_pos()):
+                        self.arrastando_efeitos = True
+                elif evento.type == pygame.MOUSEBUTTONUP:
+                    self.arrastando_musica = False
+                    self.arrastando_efeitos = False
+
+            mouse_x = pygame.mouse.get_pos()[0]
+            self.atualizar_sliders(mouse_x)
+
+            texto_musica = Texto(
+                24,
+                f'Música: {int(self.volume_musica * 100)}%',
+                (255, 255, 255),
+                (self.x_barra_volume + self.largura_barra_volume // 2, self.y_barra_musica - 20),
+                tela)
+
+            texto_efeitos = Texto(
+                24,
+                f'Efeitos: {int(self.volume_efeitos * 100)}%',
+                (255, 255, 255),
+                (self.x_barra_volume + self.largura_barra_volume // 2, self.y_barra_efeitos - 20),
+                tela)
+
+            tela.display.blit(tela.imagem_fundo, tela.rect_fundo)
+            texto_instrucao.desenha_texto()
+            texto_titulo.desenha_texto()
+
+            pygame.draw.rect(tela.display, (200, 200, 200), (self.x_barra_volume, self.y_barra_musica, self.largura_barra_volume, self.altura_barra_volume))
+            pygame.draw.rect(tela.display, (255, 255, 255), self.cursor_musica)
+
+            pygame.draw.rect(tela.display, (200, 200, 200), (self.x_barra_volume, self.y_barra_efeitos, self.largura_barra_volume, self.altura_barra_volume))
+            pygame.draw.rect(tela.display, (255, 255, 255), self.cursor_efeitos)
+
+            texto_musica.desenha_texto()
+            texto_efeitos.desenha_texto()
+
+            pygame.display.flip()
+            clock.tick(60)

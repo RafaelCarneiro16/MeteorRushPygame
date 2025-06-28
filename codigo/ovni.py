@@ -14,7 +14,6 @@ class Ovni(pygame.sprite.Sprite):
         self.__delay_tiro = 1500
 
     #region Getters e Setters
-
     @property
     def image(self):
         return self.__image
@@ -80,7 +79,6 @@ class Ovni(pygame.sprite.Sprite):
         self.__delay_tiro = novo_delay
 
     #endregion
-
 
     def update(self):
         # Movimento horizontal

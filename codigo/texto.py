@@ -67,8 +67,7 @@ class Texto:
     @rect.setter
     def rect(self, value):
         self.__rect = value
-
     #endregion    
 
     def desenha_texto(self):
-        self.__tela.display.blit(self.__texto, self.__rect)
+        self.tela.display.blit(self.texto, self.rect)

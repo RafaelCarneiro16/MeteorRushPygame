@@ -7,6 +7,7 @@ class Botao(pygame.sprite.Sprite):
         self.__image = pygame.image.load(rf'{caminho_imagem}').convert_alpha()
         self.__rect = self.__image.get_rect(center = (self.posicao))
 
+    #region Setters e Getters
     @property
     def image(self):
         return self.__image
@@ -30,4 +31,6 @@ class Botao(pygame.sprite.Sprite):
     @posicao.setter
     def posicao(self, nova_posicao):
         self.__posicao =  nova_posicao
+
+    #endregion
 

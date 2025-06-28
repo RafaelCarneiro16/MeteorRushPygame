@@ -8,6 +8,7 @@ class GerenciadorRanking:
     def __init__(self):
         self.__jogadores = []
     
+    #region Setters e Getters
     @property
     def jogadores(self):
         return self.__jogadores
@@ -15,6 +16,8 @@ class GerenciadorRanking:
     @jogadores.setter
     def jogadores(self, valor):
         self.__jogadores = valor
+
+    #endregion
 
     def adicionar_jogador(self, jogador: JogadorRanking):
         self.jogadores.append(jogador)
@@ -80,3 +83,27 @@ class GerenciadorRanking:
             clock.tick(60)
 
         return nome
+
+    def exibir_ranking(self, tela, clock):
+        rodando = True
+        fonte = pygame.font.Font(r'C:\GitHub\Jogo\fonte.ttf', 32)
+
+        while rodando:
+            for evento in pygame.event.get():
+                if evento.type == pygame.QUIT:
+                    pygame.quit()
+                    exit()
+                elif evento.type == pygame.KEYDOWN and evento.key == pygame.K_ESCAPE:
+                    rodando = False
+
+            tela.display.blit(tela.imagem_fundo, tela.rect_fundo)
+
+            titulo = fonte.render("Ranking de Pontuação", True, (255, 255, 255))
+            tela.display.blit(titulo, (tela.largura // 2 - titulo.get_width() // 2, 50))
+
+            for i, jogador in enumerate(self.jogadores, 1):
+                texto = fonte.render(f"{i}. {jogador.nome}: {jogador.pontuacao} pts", True, (255, 255, 255))
+                tela.display.blit(texto, (150, 100 + i * 40))
+
+            pygame.display.update()
+            clock.tick(60)

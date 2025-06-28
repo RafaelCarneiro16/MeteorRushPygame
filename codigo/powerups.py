@@ -8,15 +8,15 @@ class PowerUp(pygame.sprite.Sprite):
         self.__tela = tela
         self.__jogador = jogador
 
-        power_up_imagem = pygame.image.load(r'C:\GitHub\Jogo\imagens\power_up.png').convert_alpha() 
-        escudo_imagem = pygame.image.load(r'C:\GitHub\Jogo\imagens\escudo.png').convert_alpha()
+        self.__power_up_imagem = pygame.image.load(r'C:\GitHub\Jogo\imagens\power_up.png').convert_alpha() 
+        self.__escudo_imagem = pygame.image.load(r'C:\GitHub\Jogo\imagens\escudo.png').convert_alpha()
         
         if tipo == 'power_up':
-            self.__image = power_up_imagem
+            self.__image = self.power_up_imagem
             self.__rect = self.image.get_rect(center=posicao)
 
         elif tipo == 'escudo':
-            self.__image = escudo_imagem
+            self.__image = self.escudo_imagem
             self.__rect = self.image.get_rect(center=self.jogador.rect.center)
             self.__tempo_ativado = pygame.time.get_ticks()
             self.__duracao = 8000 
@@ -29,7 +29,7 @@ class PowerUp(pygame.sprite.Sprite):
             self.__image.fill((0, 0, 0, 0))
             self.__rect = self.image.get_rect(center=(-100, -100))
 
-    
+    #region Setters e Getters
     @property
     def tipo(self):
         return self.__tipo
@@ -85,6 +85,24 @@ class PowerUp(pygame.sprite.Sprite):
     @duracao.setter
     def duracao(self, value):
         self.__duracao = value
+
+    @property
+    def power_up_imagem(self):
+        return self.__power_up_imagem
+    
+    @power_up_imagem.setter
+    def power_up_imagem(self, valor):
+        self.__power_up_imagem = valor
+
+    @property
+    def escudo_imagem(self):
+        return self.__escudo_imagem
+    
+    @escudo_imagem.setter
+    def escudo_imagem(self, valor):
+        self.__escudo_imagem = valor
+
+    #endregion
 
     def update(self): 
         if self.tipo == 'power_up':

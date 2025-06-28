@@ -81,21 +81,21 @@ class Cenario(pygame.sprite.Group):
     def update(self):
         agora = pygame.time.get_ticks()
 
-        if not self.__mostrando:
+        if not self.mostrando:
             if agora >= self.proximo_evento:
                 if self.modo_atual == "planeta":
                     self.sprite.image = self.imagem_planeta
-                    self.__sprite.rect = self.__sprite.image.get_rect(topleft=(-100, -self.sprite.image.get_height()))
-                    self.__modo_atual = "sol"
+                    self.sprite.rect = self.sprite.image.get_rect(topleft=(-100, -self.sprite.image.get_height()))
+                    self.modo_atual = "sol"
                 else:
-                    self.__sprite.image = self.__imagem_sol
-                    self.__sprite.rect = self.__sprite.image.get_rect(topleft=(680, -self.sprite.image.get_height()))
-                    self.__modo_atual = "planeta"
+                    self.sprite.image = self.__imagem_sol
+                    self.sprite.rect = self.__sprite.image.get_rect(topleft=(680, -self.sprite.image.get_height()))
+                    self.modo_atual = "planeta"
 
-                self.__mostrando = True
+                self.mostrando = True
         else:
-            self.__sprite.rect.y += 1
-            if self.__sprite.rect.top > self.tela.altura:
-                self.__sprite.rect.topleft = (-999, -999)
-                self.__mostrando = False
-                self.__proximo_evento = agora + 5000
+            self.sprite.rect.y += 1
+            if self.sprite.rect.top > self.tela.altura:
+                self.sprite.rect.topleft = (-999, -999)
+                self.mostrando = False
+                self.proximo_evento = agora + 5000

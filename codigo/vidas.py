@@ -5,11 +5,10 @@ class Vidas(pygame.sprite.Sprite):
         super().__init__(grupo)
         self.__imagem_vida = pygame.image.load(rf'C:\GitHub\Jogo\imagens\vida.png').convert_alpha()
         self.__imagem_vida = pygame.transform.scale(self.__imagem_vida, (50, 50))
-        self.__imagem_vidaperdida = pygame.image.load(rf'C:\GitHub\Jogo\imagens\vida_perdida.png').convert_alpha()
-        self.__imagem_vidaperdida = pygame.transform.scale(self.__imagem_vidaperdida, (50, 50))
         self.__image = self.__imagem_vida
         self.__rect = self.__image.get_rect(topright = (posx, 0))
 
+    #region Setters e Getters
     @property
     def image(self):
         return self.__image
@@ -26,17 +25,9 @@ class Vidas(pygame.sprite.Sprite):
     def rect(self, novo):
         self.__rect = novo
 
-    @property
-    def imagem_vidaperdida(self):
-        return self.__imagem_vidaperdida
+    #endregion
 
-    @imagem_vidaperdida.setter
-    def imagem_vidaperdida(self, value):
-        self.__imagem_vidaperdida = value   
-        
-
-    def perder_vida(self):
-        self.image = self.imagem_vidaperdida
+    
         
     
         

@@ -1,6 +1,4 @@
 import pygame
-from tela import Tela
-from jogador import Jogador
 
 class Tiro(pygame.sprite.Sprite):
     def __init__(self, posição : tuple, grupo, direcao, caminho_imagem = None):
@@ -13,6 +11,7 @@ class Tiro(pygame.sprite.Sprite):
         self.__rect = self.image.get_rect(center = (posição))
         self.__direcao = direcao
 
+    #region Setters e Getters
     @property
     def image(self):
         return self.__image
@@ -41,3 +40,5 @@ class Tiro(pygame.sprite.Sprite):
         self.rect.y -= self.direcao * 10
         if self.rect.bottom < 0:
            self.kill()
+    
+    #endregion
