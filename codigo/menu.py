@@ -9,9 +9,9 @@ from jogador_ranking import JogadorRanking
 from gerenciador_raking import GerenciadorRanking
 
 class Menu():
-    def __init__(self, jogo: Jogo, tela: Tela, som: Som, ranking: GerenciadorRanking):
+    def __init__(self, jogo: Jogo):
         self.__clock = pygame.time.Clock()
-        self.__tela = tela  
+        self.__tela = Tela(800, 600, 'C:/GitHub/Jogo/imagens/fundo2.png')
         self.__jogo = jogo
         self.__grupo_botoes = pygame.sprite.Group()
         try:
@@ -20,13 +20,16 @@ class Menu():
             print(f"⚠️ [MENU] Falha ao carregar a imagem do logo: {erro}")
             self.__logo_jogo = pygame.Surface((200, 100), pygame.SRCALPHA)
         self.__logo_rect = self.__logo_jogo.get_rect(center = (400, 125))
-        self.__som = som
-        self.__ranking = ranking
+        self.__som = Som()
+        self.__ranking = GerenciadorRanking()
+        self.__ranking.carregar_de_arquivo("ranking.json")
+
         try:
             self.__fonte = pygame.font.Font(rf'C:\GitHub\Jogo\fonte.ttf', 24)
         except pygame.error as erro:
             print(f"⚠️ [MENU] Falha ao carregar fonte: {erro}")
             self.__fonte = pygame.font.SysFont(None, 24)
+            
         self.__texto_titulo = Texto(48, "Gerenciador de Som", (255,255,255), (self.__tela.largura // 2, 50), self.__tela)
         self.__texto_instrucao = Texto(24, "Pressione ESC para voltar ao menu principal", (255,255,255), (self.__tela.largura // 2, self.__tela.altura - 30), self.__tela)
 
