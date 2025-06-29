@@ -2,7 +2,7 @@ import pygame
 import random
 from tela import Tela
 
-class Meteoro_Dourado(pygame.sprite.Sprite):
+class MeteoroDourado(pygame.sprite.Sprite):
     def __init__(self, grupo, tela: Tela, jogador):
         super().__init__(grupo)
         self.__tela = tela

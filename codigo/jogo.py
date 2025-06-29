@@ -6,7 +6,7 @@ from tiro import Tiro
 from meteoro import Meteoro
 from vidas import Vidas
 from som import Som
-from meteorodourado import Meteoro_Dourado
+from meteorodourado import MeteoroDourado
 from botao import Botao
 from jogador_ranking import JogadorRanking
 from gerenciador_raking import GerenciadorRanking
@@ -40,10 +40,26 @@ class Jogo():
         self.__pontuacao = 0
         self.__grupo_ovnis = pygame.sprite.Group()
         self.__grupo_tiros_inimigos = pygame.sprite.Group()
-        self.ovni_ativo = False
-        self.evento_ovni = pygame.USEREVENT + 3
+        self.__ovni_ativo = False
+        self.__evento_ovni = pygame.USEREVENT + 3
 
     #region Setters e Getters
+    @property
+    def ovni_ativo(self):
+        return self.__ovni_ativo
+    
+    @ovni_ativo.setter
+    def ovni_ativo(self, valor):
+        self.__ovni_ativo = valor
+
+    @property
+    def evento_ovni(self):
+        return self.__evento_ovni
+    
+    @evento_ovni.setter
+    def evento_ovni(self, valor):
+        self.__evento_ovni = valor
+
     @property
     def tempo_decorrido(self):
         return self.__tempo_decorrido
@@ -417,7 +433,7 @@ class Jogo():
 
             elif evento.type == evento_meteoro_dourado:
                 x = random.randint(0, self.tela.largura - 50)
-                Meteoro_Dourado(self.grupo_meteoros_dourados, self.tela ,self.jogador)
+                MeteoroDourado(self.grupo_meteoros_dourados, self.tela ,self.jogador)
             
             elif evento.type == self.evento_ovni and not self.ovni_ativo:
                 Ovni(self.grupo_ovnis, rf"C:\GitHub\Jogo\imagens\ovni.png", (random.randint(100, 700), 100), self.grupo_tiros_inimigos, self.jogador)
