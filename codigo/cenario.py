@@ -1,5 +1,6 @@
 import pygame
 from tela import Tela
+import os
 
 class Cenario(pygame.sprite.Group):
     def __init__(self, tela: Tela):
@@ -8,13 +9,13 @@ class Cenario(pygame.sprite.Group):
             self.__tela = tela
 
             try:
-                self.__imagem_planeta = pygame.image.load(r"C:\GitHub\Jogo\imagens\planeta.png").convert_alpha()
+                self.__imagem_planeta = pygame.image.load(os.path.join('imagens', 'planeta.png')).convert_alpha()
             except pygame.error as erro_img_planeta:
                 print(f"⚠️ [CENARIO] Erro ao carregar imagem do planeta: {erro_img_planeta}")
                 self.__imagem_planeta = None
 
             try:
-                self.__imagem_sol = pygame.image.load(r"C:\GitHub\Jogo\imagens\sol.png").convert_alpha()
+                self.__imagem_sol = pygame.image.load(os.path.join('imagens', 'sol.png')).convert_alpha()
             except pygame.error as erro_img_sol:
                 print(f"⚠️ [CENARIO] Erro ao carregar imagem do sol: {erro_img_sol}")
                 self.__imagem_sol = None

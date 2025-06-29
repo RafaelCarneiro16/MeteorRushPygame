@@ -1,5 +1,6 @@
 import pygame
 from tela import Tela
+import os
 
 class Texto:
     def __init__(self, tamanho: int, texto: str, cor: tuple, posicao: tuple, tela: Tela):
@@ -9,7 +10,7 @@ class Texto:
             self.__texto_str = texto
             self.__tela = tela
             try:
-                self.__fonte = pygame.font.Font(r'C:\GitHub\Jogo\fonte.ttf', self.tamanho)
+                self.__fonte = pygame.font.Font(os.path.join('fonte.ttf'), self.tamanho)
             except Exception as erro_fonte:
                 print(f"⚠️ [TEXTO] Erro ao carregar fonte: {erro_fonte}")
                 self.__fonte = pygame.font.SysFont(None, self.tamanho)  # Fonte padrão

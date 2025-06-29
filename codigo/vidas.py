@@ -1,10 +1,11 @@
 import pygame
+import os
 
 class Vidas(pygame.sprite.Sprite):
     def __init__(self, grupo, posx=int):
         super().__init__(grupo)
         try:
-            self.__imagem_vida = pygame.image.load(rf'C:\GitHub\Jogo\imagens\vida.png').convert_alpha()
+            self.__imagem_vida = pygame.image.load(os.path.join('imagens', 'vida.png')).convert_alpha()
             self.__imagem_vida = pygame.transform.scale(self.imagem_vida, (50, 50))
         except pygame.error as erro:
             print(f"⚠️ [VIDAS] Falha ao carregar a imagem de vida: {erro}")

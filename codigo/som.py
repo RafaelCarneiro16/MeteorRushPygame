@@ -1,5 +1,6 @@
 import pygame 
 from texto import Texto
+import os
 
 class Som():
     def __init__(self):
@@ -139,9 +140,9 @@ class Som():
             print(f"⚠️ [SOM] Erro pygame: {erro}")
     
     # Toca um efeito sonoro com volume opcional
-    def tocar_efeitos(self, caminho, volume=None):
+    def tocar_efeitos(self, som, volume=None):
         try:
-            efeito = pygame.mixer.Sound(caminho)
+            efeito = pygame.mixer.Sound(os.path.join('sons', f'{som}'))
             if volume is None:
                 volume = self.__volume_efeitos
             efeito.set_volume(volume)
@@ -149,12 +150,12 @@ class Som():
         except pygame.error as erro:
             print(f"⚠️ [SOM] Erro pygame: {erro}")
         except FileNotFoundError:
-            print(f"⚠️ [SOM] Arquivo não encontrado: {caminho}")
+            print(f"⚠️ [SOM] Arquivo não encontrado: {som}")
 
     # Carrega e toca uma música em loop com volume opcional
-    def tocar_musica(self, caminho, volume=None):
+    def tocar_musica(self, som, volume=None):
         try:
-            pygame.mixer.music.load(caminho)
+            pygame.mixer.music.load(os.path.join('sons', f'{som}'))
             if volume is None:
                 volume = self.__volume_musica
             pygame.mixer.music.set_volume(volume)
@@ -162,7 +163,7 @@ class Som():
         except pygame.error as erro:
             print(f"⚠️ [SOM] Erro pygame: {erro}")
         except FileNotFoundError:
-            print(f"⚠️ [SOM] Arquivo não encontrado: {caminho}")
+            print(f"⚠️ [SOM] Arquivo não encontrado: {som}")
 
     # Para a música que estiver tocando
     def parar_musica(self):

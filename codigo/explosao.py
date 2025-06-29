@@ -1,5 +1,6 @@
 import pygame
 from tela import Tela
+import os
 
 class Explosao(pygame.sprite.Sprite):
     def __init__(self, group, tela: Tela, posicao):
@@ -7,7 +8,7 @@ class Explosao(pygame.sprite.Sprite):
         try:
             self.__tela = tela
             try:
-                self.__sprites = pygame.image.load(r'C:\GitHub\Jogo\imagens\explosao.png').convert_alpha()
+                self.__sprites = pygame.image.load(os.path.join('imagens', 'explosao.png')).convert_alpha()
             except pygame.error as erro_img:
                 print(f"⚠️ [EXPLOSAO] Erro ao carregar imagem: {erro_img}")
                 self.__sprites = None

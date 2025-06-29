@@ -9,16 +9,17 @@ from jogador_ranking import JogadorRanking
 from gerenciador_raking import GerenciadorRanking
 from gerenciador_progresso import GerenciadorProgresso
 from vidas import Vidas
+import os
 
 class Menu():
     def __init__(self, jogo: Jogo):
         self.__clock = pygame.time.Clock()
-        self.__tela = Tela(800, 600, 'C:/GitHub/Jogo/imagens/fundo2.png')
+        self.__tela = Tela(800, 600, 'fundo2.png')
         self.__jogo = jogo
         self.__grupo_botoes = pygame.sprite.Group()
         self.__gerenciador_progresso = GerenciadorProgresso()
         try:
-            self.__logo_jogo = pygame.image.load('C:/GitHub/Jogo/imagens/icone_nome_jogo.png').convert_alpha()
+            self.__logo_jogo = pygame.image.load(os.path.join('imagens', 'icone_nome_jogo.png')).convert_alpha()
         except pygame.error as erro:
             print(f"⚠️ [MENU] Falha ao carregar a imagem do logo: {erro}")
             self.__logo_jogo = pygame.Surface((200, 100), pygame.SRCALPHA)
@@ -28,7 +29,7 @@ class Menu():
         self.__ranking.carregar_de_arquivo("ranking.json")
 
         try:
-            self.__fonte = pygame.font.Font(rf'C:\GitHub\Jogo\fonte.ttf', 24)
+            self.__fonte = pygame.font.Font(os.path.join('fonte.ttf'), 24)
         except pygame.error as erro:
             print(f"⚠️ [MENU] Falha ao carregar fonte: {erro}")
             self.__fonte = pygame.font.SysFont(None, 24)
@@ -145,12 +146,12 @@ class Menu():
         self.ranking.exibir_ranking(self.tela, self.clock)
 
     def rodando_menu(self):
-        botao_continuar = Botao(self.grupo_botoes, r'C:\GitHub\Jogo\imagens\bt_continuar.png', (400,175))
-        botao_novojogo = Botao(self.grupo_botoes, 'C:/GitHub/Jogo/imagens/bt_novo_jogo.png', (400,295))
-        botao_ranking = Botao(self.grupo_botoes, 'C:/GitHub/Jogo/imagens/bt_ranking.png', (400,413))
-        botao_som = Botao(self.grupo_botoes, 'C:/GitHub/Jogo/imagens/bt_som.png', (400,532))
+        botao_continuar = Botao(self.grupo_botoes, 'bt_continuar.png', (400,175))
+        botao_novojogo = Botao(self.grupo_botoes, 'bt_novo_jogo.png', (400,295))
+        botao_ranking = Botao(self.grupo_botoes, 'bt_ranking.png', (400,413))
+        botao_som = Botao(self.grupo_botoes, 'bt_som.png', (400,532))
 
-        self.som.tocar_musica(r"C:\GitHub\Jogo\sons\musica_menu.wav")
+        self.som.tocar_musica('musica_menu.wav')
 
         rodando_menu = True
 
@@ -170,22 +171,22 @@ class Menu():
 
             if mouse_botao[0]:
                 if botao_novojogo.rect.collidepoint(mouse_pos):
-                    self.som.tocar_efeitos(r"C:\GitHub\Jogo\sons\clique_inicio.wav")
+                    self.som.tocar_efeitos("clique_inicio.wav")
                     self.som.parar_musica()
                     self.jogo.novo_jogo()
                     rodando_menu = False
 
                 if botao_som.rect.collidepoint(mouse_pos):
-                    self.som.tocar_efeitos(r"C:\GitHub\Jogo\sons\clique.mp3")
+                    self.som.tocar_efeitos("clique.mp3")
                     self.menu_volume()
                     rodando_menu = False
 
                 if botao_ranking.rect.collidepoint(mouse_pos):
-                    self.som.tocar_efeitos(r"C:\GitHub\Jogo\sons\clique.mp3")
+                    self.som.tocar_efeitos("clique.mp3")
                     self.exibir_ranking()
 
                 if botao_continuar.rect.collidepoint(mouse_pos):
-                    self.som.tocar_efeitos(r"C:\GitHub\Jogo\sons\clique_inicio.wav")
+                    self.som.tocar_efeitos("clique_inicio.wav")
                     progresso = self.gerenciador_progresso.carregar_progresso()
                     
                     if progresso:

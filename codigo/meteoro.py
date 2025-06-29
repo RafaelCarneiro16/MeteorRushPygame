@@ -1,8 +1,9 @@
 import pygame 
 import random
 from tela import Tela
+from inimigo import Inimigo
 
-class Meteoro(pygame.sprite.Sprite):
+class Meteoro(Inimigo):
     def __init__(self, x, grupo):
         super().__init__(grupo)
         self.__original_image = pygame.image.load(rf"C:\GitHub\Jogo\imagens\meteoro2.png").convert_alpha()

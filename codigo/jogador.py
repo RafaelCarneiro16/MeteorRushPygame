@@ -1,5 +1,6 @@
 import pygame
 from tela import Tela
+import os
 
 class Jogador(pygame.sprite.Sprite):
     def __init__(self, group, tela: Tela):
@@ -8,11 +9,11 @@ class Jogador(pygame.sprite.Sprite):
         
         try:
             self.__frames = [
-                pygame.image.load(rf'C:\GitHub\Jogo\imagens\nave0.png').convert_alpha(),
-                pygame.image.load(rf'C:\GitHub\Jogo\imagens\nave1.png').convert_alpha(),
-                pygame.image.load(rf'C:\GitHub\Jogo\imagens\nave2.png').convert_alpha(),
-                pygame.image.load(rf'C:\GitHub\Jogo\imagens\nave3.png').convert_alpha(),
-                pygame.image.load(rf'C:\GitHub\Jogo\imagens\nave4.png').convert_alpha()
+                pygame.image.load(os.path.join('imagens', 'nave0.png')).convert_alpha(),
+                pygame.image.load(os.path.join('imagens', 'nave1.png')).convert_alpha(),
+                pygame.image.load(os.path.join('imagens', 'nave2.png')).convert_alpha(),
+                pygame.image.load(os.path.join('imagens', 'nave3.png')).convert_alpha(),
+                pygame.image.load(os.path.join('imagens', 'nave4.png')).convert_alpha()
             ]
         except pygame.error as erro:
             print(f"⚠️ [JOGADOR] Falha ao carregar imagens dos frames da nave: {erro}")
@@ -30,7 +31,7 @@ class Jogador(pygame.sprite.Sprite):
         self.__contador = 0
 
         try:
-            self.__vento = pygame.image.load(rf'C:\GitHub\Jogo\imagens\vento.png').convert_alpha()
+            self.__vento = pygame.image.load(os.path.join('imagens', 'vento.png')).convert_alpha()
             self.__vento_rect = self.vento.get_rect(center=self.rect.center)
         except pygame.error as erro:
             print(f"⚠️ [JOGADOR] Falha ao carregar imagem do vento: {erro}")

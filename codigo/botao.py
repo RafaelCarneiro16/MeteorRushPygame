@@ -1,12 +1,13 @@
 import pygame
+import os
 
 class Botao(pygame.sprite.Sprite):
-    def __init__(self, grupo, caminho_imagem, posicao: tuple):
+    def __init__(self, grupo, imagem, posicao: tuple):
         super().__init__(grupo)
         try:
             self.__posicao = posicao
             try:
-                self.__image = pygame.image.load(rf'{caminho_imagem}').convert_alpha()
+                self.__image = pygame.image.load(os.path.join('imagens', f'{imagem}')).convert_alpha()
             except pygame.error as erro_img:
                 print(f"⚠️ [BOTAO] Erro ao carregar imagem: {erro_img}")
                 self.__image = None

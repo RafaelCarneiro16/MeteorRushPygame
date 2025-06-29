@@ -1,14 +1,16 @@
 import pygame 
 import random
 from tela import Tela
+from inimigo import Inimigo
+import os
 
-class MeteoroDourado(pygame.sprite.Sprite):
+class MeteoroDourado(Inimigo):
     def __init__(self, grupo, tela: Tela, jogador):
         super().__init__(grupo)
         self.__tela = tela
         self.__jogador = jogador
         try:
-            self.__image = pygame.image.load(r'C:\GitHub\Jogo\imagens\meteoro_dourado.png').convert_alpha()
+            self.__image = pygame.image.load(os.path.join('imagens', 'meteoro_dourado.png')).convert_alpha()
         except pygame.error as erro:
             print(f"⚠️ [METEORO_DOURADO] Falha ao carregar imagem do meteoro dourado: {erro}")
             self.__image = pygame.Surface((40, 40), pygame.SRCALPHA)

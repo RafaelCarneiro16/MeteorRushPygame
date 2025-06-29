@@ -1,4 +1,5 @@
 import pygame
+import os
 
 class Tela():
     def __init__(self, largura, altura, imagem_fundo):
@@ -8,7 +9,7 @@ class Tela():
             self.__display = pygame.display.set_mode((self.largura, self.altura))
             self.__nome_jogo = pygame.display.set_caption('Meteor Rush')
             try:
-                self.__imagem_fundo = pygame.image.load(rf'{imagem_fundo}').convert_alpha()
+                self.__imagem_fundo = pygame.image.load(os.path.join('imagens', f'{imagem_fundo}')).convert_alpha()
             except pygame.error as erro_img:
                 print(f"⚠️ [TELA] Erro ao carregar imagem: {erro_img}")
                 self.__imagem_fundo = None

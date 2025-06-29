@@ -15,10 +15,11 @@ from explosao import Explosao
 from powerups import PowerUp
 from ovni import Ovni
 from gerenciador_progresso import GerenciadorProgresso
+import os
 
 class Jogo():
     def __init__(self):
-        self.__tela = Tela(800, 600, r'C:/GitHub/Jogo/imagens/fundo.png')
+        self.__tela = Tela(800, 600, 'fundo.png')
         self.__grupo_jogador = pygame.sprite.GroupSingle()
         self.__jogador = Jogador(self.__grupo_jogador, self.__tela)
         self.__grupo_vidas = pygame.sprite.Group()
@@ -35,7 +36,7 @@ class Jogo():
         self.__grupo_explosoes = pygame.sprite.Group()
         self.__grupo_powerup = pygame.sprite.Group()
         self.__grupo_pause = pygame.sprite.GroupSingle()
-        self.__botao_pause = Botao(self.grupo_pause, r'C:\GitHub\Jogo\imagens\pause.png', (60, 560))
+        self.__botao_pause = Botao(self.grupo_pause, "pause.png", (60, 560))
         self.__lista_vidas = []
         self.__pontuacao = 0
         self.__grupo_ovnis = pygame.sprite.Group()
@@ -251,7 +252,7 @@ class Jogo():
             self.lista_vidas.append(vida)
 
     
-        font = pygame.font.Font(r'C:\GitHub\Jogo\fonte.ttf', 24)
+        font = pygame.font.Font(os.path.join('fonte.ttf'), 24)
 
         evento_meteoro = pygame.USEREVENT + 1
         evento_meteoro_dourado = pygame.USEREVENT + 2
@@ -260,7 +261,7 @@ class Jogo():
         pygame.time.set_timer(self.evento_ovni, 1000, loops=1)
 
         rodando = True
-        self.som.tocar_musica(rf"C:\GitHub\Jogo\sons\musica_jogo.wav")
+        self.som.tocar_musica("musica_jogo.wav")
 
         while rodando:
             self.testes_evento(evento_meteoro, evento_meteoro_dourado)
@@ -311,9 +312,9 @@ class Jogo():
 
         grupo_botoes = pygame.sprite.Group()
         pausado = True
-        titulo = Botao(grupo_botoes, rf'C:\GitHub\Jogo\imagens\titulo_jogo_pausado.png', (400, 150))
-        botao_voltar = Botao(grupo_botoes, rf'C:\GitHub\Jogo\imagens\bt_voltar_ao_jogo.png', (400, 250))
-        botao_sair = Botao(grupo_botoes, rf'C:\GitHub\Jogo\imagens\bt_salvar_sair.png', (400, 370))
+        titulo = Botao(grupo_botoes, 'titulo_jogo_pausado.png', (400, 150))
+        botao_voltar = Botao(grupo_botoes, 'bt_voltar_ao_jogo.png', (400, 250))
+        botao_sair = Botao(grupo_botoes, 'bt_salvar_sair.png', (400, 370))
 
         fundo_transparente = pygame.Surface((800,600))
         fundo_transparente.set_alpha(120)
@@ -331,10 +332,10 @@ class Jogo():
 
             if mouse_botao[0]:
                 if botao_voltar.rect.collidepoint(mouse_pos):
-                    self.som.tocar_efeitos(r"C:\GitHub\Jogo\sons\clique.mp3")
+                    self.som.tocar_efeitos("clique.mp3")
                     return True
                 elif botao_sair.rect.collidepoint(mouse_pos):
-                    self.som.tocar_efeitos(r"C:\GitHub\Jogo\sons\clique.mp3")
+                    self.som.tocar_efeitos("clique.mp3")
                     self.gerenciador_progresso.salvar_progresso(
                     pontuacao=self.pontuacao,
                     vidas=len(self.lista_vidas)
@@ -353,10 +354,10 @@ class Jogo():
     def game_over(self, pontuacao): 
         grupo_botoes = pygame.sprite.Group()
         pausado = True
-        botao_game_over = Botao(grupo_botoes, rf'C:\GitHub\Jogo\imagens\titulo_game_over.png', (400, 120))
-        botao_novo_jogo = Botao(grupo_botoes, rf'C:\GitHub\Jogo\imagens\bt_novo_jogo.png', (400, 260))
-        botao_menu = Botao(grupo_botoes, rf'C:\GitHub\Jogo\imagens\bt_menu_principal.png', (400, 380))
-        botao_sair = Botao(grupo_botoes, rf'C:\GitHub\Jogo\imagens\bt_salvar_sair.png', (400, 500))
+        botao_game_over = Botao(grupo_botoes, 'titulo_game_over.png', (400, 120))
+        botao_novo_jogo = Botao(grupo_botoes, 'bt_novo_jogo.png', (400, 260))
+        botao_menu = Botao(grupo_botoes, 'bt_menu_principal.png', (400, 380))
+        botao_sair = Botao(grupo_botoes, 'bt_salvar_sair.png', (400, 500))
 
         nome = self.ranking.solicitar_nome(self.__tela, self.__clock, botao_game_over)
         self.ranking.adicionar_jogador(JogadorRanking(nome, pontuacao)) 
@@ -376,14 +377,14 @@ class Jogo():
 
             if mouse_botao[0]:
                 if botao_menu.rect.collidepoint(mouse_pos):
-                    self.som.tocar_efeitos(r"C:\GitHub\Jogo\sons\clique.mp3")
+                    self.som.tocar_efeitos("clique.mp3")
                     return False
                 elif botao_novo_jogo.rect.collidepoint(mouse_pos):
-                    self.som.tocar_efeitos(r"C:\GitHub\Jogo\sons\clique.mp3")
+                    self.som.tocar_efeitos("clique.mp3")
                     self.novo_jogo()
                     return
                 elif botao_sair.rect.collidepoint(mouse_pos):
-                    self.som.tocar_efeitos(r"C:\GitHub\Jogo\sons\clique.mp3")
+                    self.som.tocar_efeitos("clique.mp3")
                     pygame.quit()
                     exit()
 
@@ -417,15 +418,15 @@ class Jogo():
                     return
                 elif evento.key == pygame.K_SPACE:
                     if not self.jogador.tiro_triplo:
-                        Tiro((self.jogador.rect.midtop), self.grupo_tiros, direcao = 1, caminho_imagem = rf'C:\GitHub\Jogo\imagens\tiro_jogador.png')
-                        self.som.tocar_efeitos(rf"C:\GitHub\Jogo\sons\laser.wav")
+                        Tiro((self.jogador.rect.midtop), self.grupo_tiros, direcao = 1, imagem = 'tiro_jogador.png')
+                        self.som.tocar_efeitos("laser.wav")
 
                     else:
                         x, y = self.jogador.rect.midtop
-                        Tiro((x - 20, y), self.grupo_tiros, direcao = 1, caminho_imagem = rf'C:\GitHub\Jogo\imagens\tiro_jogador.png')
-                        Tiro((x, y - 20), self.grupo_tiros, direcao = 1, caminho_imagem = rf'C:\GitHub\Jogo\imagens\tiro_jogador.png')
-                        Tiro((x + 20, y), self.grupo_tiros, direcao = 1, caminho_imagem =rf'C:\GitHub\Jogo\imagens\tiro_jogador.png')
-                        self.som.tocar_efeitos(rf"C:\GitHub\Jogo\sons\laser.wav")
+                        Tiro((x - 20, y), self.grupo_tiros, direcao = 1, imagem = 'tiro_jogador.png')
+                        Tiro((x, y - 20), self.grupo_tiros, direcao = 1, imagem = 'tiro_jogador.png')
+                        Tiro((x + 20, y), self.grupo_tiros, direcao = 1, imagem = 'tiro_jogador.png')
+                        self.som.tocar_efeitos("laser.wav")
                         
             elif evento.type == evento_meteoro:
                 x = random.randint(0, self.tela.largura - 50)
@@ -436,7 +437,7 @@ class Jogo():
                 MeteoroDourado(self.grupo_meteoros_dourados, self.tela ,self.jogador)
             
             elif evento.type == self.evento_ovni and not self.ovni_ativo:
-                Ovni(self.grupo_ovnis, rf"C:\GitHub\Jogo\imagens\ovni.png", (random.randint(100, 700), 100), self.grupo_tiros_inimigos, self.jogador)
+                Ovni(self.grupo_ovnis, (random.randint(100, 700), 100), self.grupo_tiros_inimigos, self.jogador)
                 self.ovni_ativo = True
 
     def colisoes(self):
@@ -446,7 +447,7 @@ class Jogo():
                 if hasattr(ovni, "levar_dano"):
                    ovni.levar_dano()
                    if ovni.vida <= 0:
-                    self.som.tocar_efeitos(r"C:\GitHub\Jogo\sons\explosion.wav")
+                    self.som.tocar_efeitos("explosion.wav")
                     Explosao(self.grupo_explosoes, self.tela, ovni.rect.center)
                     ovni.kill()
                     self.pontuacao += 1000
@@ -461,7 +462,7 @@ class Jogo():
                 powerup_ativo = any(p.tipo in ['escudo', 'tiro_triplo'] for p in self.grupo_powerup)
                 
                 if not powerup_ativo:
-                    self.som.tocar_efeitos(r"C:\GitHub\Jogo\sons\power_up.wav")
+                    self.som.tocar_efeitos("power_up.wav")
                     escolhido = random.choice(['escudo', 'tiro_triplo'])
                     PowerUp(escolhido, self.grupo_powerup, self.jogador.rect.center, self.tela, self.jogador)
 
@@ -478,24 +479,24 @@ class Jogo():
             colisao_tiro_jogador = pygame.sprite.spritecollide(self.jogador, self.grupo_tiros_inimigos, True)
 
             if colisao_jogador_m or colisao_jogador_md:
-                self.som.tocar_efeitos(r"C:\GitHub\Jogo\sons\hit.wav")
+                self.som.tocar_efeitos("hit.wav")
                 if self.lista_vidas:
                     vida_perdida = self.lista_vidas.pop()
                     vida_perdida.kill()
                     if not self.lista_vidas:
                         self.som.parar_musica()
-                        self.som.tocar_efeitos(r"C:\GitHub\Jogo\sons\game_over_efeito.wav")
+                        self.som.tocar_efeitos("game_over_efeito.wav")
                         self.game_over(self.pontuacao)
                         return True
 
             for tiro in colisao_tiro_jogador:
-                self.som.tocar_efeitos(r"C:\GitHub\Jogo\sons\hit.wav")
+                self.som.tocar_efeitos("hit.wav")
                 if self.lista_vidas:
                     vida_perdida = self.lista_vidas.pop()
                     vida_perdida.kill()
                     if not self.lista_vidas:
                         self.som.parar_musica()
-                        self.som.tocar_efeitos(r"C:\GitHub\Jogo\sons\game_over_efeito.wav")
+                        self.som.tocar_efeitos("game_over_efeito.wav")
                         self.game_over(self.pontuacao)
                         return True        
                         

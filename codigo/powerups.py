@@ -1,5 +1,6 @@
 import pygame
 from texto import Texto
+import os
 
 class PowerUp(pygame.sprite.Sprite):
     def __init__(self, tipo, grupo, posicao, tela, jogador): 
@@ -7,23 +8,21 @@ class PowerUp(pygame.sprite.Sprite):
         self.__tipo = tipo
         self.__tela = tela
         self.__jogador = jogador
-
         try:
-            self.__power_up_imagem = pygame.image.load(r'C:\GitHub\Jogo\imagens\power_up.png').convert_alpha() 
+            power_up_imagem = pygame.image.load(os.path.join("imagens", "power_up.png")).convert_alpha()
         except pygame.error as erro:
-            print(f"⚠️ [POWERUP] Falha ao carregar imagem power_up: {erro}")
-
+                    print(f"⚠️ [POWERUP] Falha ao carregar imagem power_up: {erro}")
         try:
-            self.__escudo_imagem = pygame.image.load(r'C:\GitHub\Jogo\imagens\escudo.png').convert_alpha()
+            escudo_imagem = pygame.image.load(os.path.join("imagens", "escudo.png")).convert_alpha()
         except pygame.error as erro:
-            print(f"⚠️ [POWERUP] Falha ao carregar imagem escudo: {erro}")
-        
+                    print(f"⚠️ [POWERUP] Falha ao carregar imagem escudo: {erro}")    
+
         if tipo == 'power_up':
-            self.__image = self.power_up_imagem
+            self.__image = power_up_imagem
             self.__rect = self.image.get_rect(center=posicao)
 
         elif tipo == 'escudo':
-            self.__image = self.escudo_imagem
+            self.__image = escudo_imagem
             self.__rect = self.image.get_rect(center=self.jogador.rect.center)
             self.__tempo_ativado = pygame.time.get_ticks()
             self.__duracao = 8000 
@@ -92,22 +91,6 @@ class PowerUp(pygame.sprite.Sprite):
     @duracao.setter
     def duracao(self, value):
         self.__duracao = value
-
-    @property
-    def power_up_imagem(self):
-        return self.__power_up_imagem
-    
-    @power_up_imagem.setter
-    def power_up_imagem(self, valor):
-        self.__power_up_imagem = valor
-
-    @property
-    def escudo_imagem(self):
-        return self.__escudo_imagem
-    
-    @escudo_imagem.setter
-    def escudo_imagem(self, valor):
-        self.__escudo_imagem = valor
 
     #endregion
 
