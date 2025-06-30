@@ -3,6 +3,7 @@ class JogadorRanking:
         self.__nome = nome
         self.__pontuacao = pontuacao
     
+    #region Setters e Getters
     @property
     def nome(self):
         return self.__nome
@@ -18,6 +19,8 @@ class JogadorRanking:
     @pontuacao.setter
     def pontuacao(self, value):
         self.__pontuacao = value
+
+    #endregion
 
     def to_dict(self):
         return {"nome": self.nome, "pontuacao": self.pontuacao}

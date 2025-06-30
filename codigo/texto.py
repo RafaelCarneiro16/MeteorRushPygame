@@ -1,15 +1,25 @@
 import pygame
 from tela import Tela
+import os
 
 class Texto:
     def __init__(self, tamanho: int, texto: str, cor: tuple, posicao: tuple, tela: Tela):
-        self.__tamanho = tamanho
-        self.__cor = cor
-        self.__texto_str = texto
-        self.__tela = tela
-        self.__fonte = pygame.font.Font(r'C:\GitHub\Jogo\fonte.ttf', self.__tamanho)
-        self.__texto = self.__fonte.render(self.__texto_str, True, self.__cor)
-        self.__rect = self.__texto.get_rect(center= posicao)
+        try:
+            self.__tamanho = tamanho
+            self.__cor = cor
+            self.__texto_str = texto
+            self.__tela = tela
+            try:
+                self.__fonte = pygame.font.Font(os.path.join('fonte.ttf'), self.tamanho)
+            except Exception as erro_fonte:
+                print(f"⚠️ [TEXTO] Erro ao carregar fonte: {erro_fonte}")
+                self.__fonte = pygame.font.SysFont(None, self.tamanho)  # Fonte padrão
+            self.__texto = self.fonte.render(self.texto_str, True, self.__cor)
+            self.__rect = self.texto.get_rect(center=posicao)
+        except Exception as erro:
+            print(f"⚠️ [TEXTO] Erro ao inicializar texto: {erro}")
+            self.__texto = None
+            self.__rect = None
 
     #region Setters e Getters
     @property
@@ -67,8 +77,13 @@ class Texto:
     @rect.setter
     def rect(self, value):
         self.__rect = value
-
     #endregion    
 
     def desenha_texto(self):
-        self.__tela.display.blit(self.__texto, self.__rect)
+        try:
+            if self.texto and self.rect:
+                self.tela.display.blit(self.texto, self.rect)
+            else:
+                print("⚠️ [TEXTO] Texto ou rect não inicializados para desenhar.")
+        except Exception as erro:
+            print(f"⚠️ [TEXTO] Erro ao desenhar texto: {erro}")

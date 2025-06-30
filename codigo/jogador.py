@@ -1,28 +1,47 @@
 import pygame
 from tela import Tela
+import os
 
 class Jogador(pygame.sprite.Sprite):
-    def __init__(self, group, tela : Tela):
+    def __init__(self, group, tela: Tela):
         super().__init__(group)
         self.__tela = tela
-        self.__frames = [
-            pygame.image.load(rf'C:\GitHub\Jogo\imagens\nave0.png').convert_alpha(),
-            pygame.image.load(rf'C:\GitHub\Jogo\imagens\nave1.png').convert_alpha(),
-            pygame.image.load(rf'C:\GitHub\Jogo\imagens\nave2.png').convert_alpha(),
-            pygame.image.load(rf'C:\GitHub\Jogo\imagens\nave3.png').convert_alpha(),
-            pygame.image.load(rf'C:\GitHub\Jogo\imagens\nave4.png').convert_alpha()
-        ]
+        
+        try:
+            self.__frames = [
+                pygame.image.load(os.path.join('imagens', 'nave0.png')).convert_alpha(),
+                pygame.image.load(os.path.join('imagens', 'nave1.png')).convert_alpha(),
+                pygame.image.load(os.path.join('imagens', 'nave2.png')).convert_alpha(),
+                pygame.image.load(os.path.join('imagens', 'nave3.png')).convert_alpha(),
+                pygame.image.load(os.path.join('imagens', 'nave4.png')).convert_alpha()
+            ]
+        except pygame.error as erro:
+            print(f"⚠️ [JOGADOR] Falha ao carregar imagens dos frames da nave: {erro}")
+            self.__frames = []
+        
         self.__indice = 0
-        self.__image = self.__frames[self.__indice]
-        self.__rect = self.__image.get_rect(center = (400, 400))
-        self.__tempo_animacao = 5 
+        if self.__frames:
+            self.__image = self.frames[self.indice]
+            self.__rect = self.image.get_rect(center=(400, 400))
+        else:
+            self.__image = None
+            self.__rect = pygame.Rect(400, 400, 50, 50)  # fallback retângulo
+
+        self.__tempo_animacao = 5
         self.__contador = 0
-        self.__vento = pygame.image.load(fr'C:\GitHub\Jogo\imagens\vento.png').convert_alpha()
-        self.__vento_rect = self.__vento.get_rect(center = (self.__rect.center))
+
+        try:
+            self.__vento = pygame.image.load(os.path.join('imagens', 'vento.png')).convert_alpha()
+            self.__vento_rect = self.vento.get_rect(center=self.rect.center)
+        except pygame.error as erro:
+            print(f"⚠️ [JOGADOR] Falha ao carregar imagem do vento: {erro}")
+            self.__vento = None
+            self.__vento_rect = pygame.Rect(0, 0, 0, 0)
+
         self.__subindo = False
         self.__tiro_triplo = False
-
-    #region Setters e Getters
+  
+    # region Getters e Setters
     @property
     def tela(self):
         return self.__tela
@@ -111,54 +130,51 @@ class Jogador(pygame.sprite.Sprite):
     def tiro_triplo(self, value):
         self.__tiro_triplo = value
 
-    #endregion     
+    # endregion
 
     def animacao_vento(self):
-        if self.__subindo:
-            self.__vento_rect.centerx = self.rect.centerx - 1
-            self.__vento_rect.centery = self.rect.centery
-            self.tela.display.blit(self.__vento, self.__vento_rect)
+        if self.subindo:
+            self.vento_rect.centerx = self.rect.centerx - 1
+            self.vento_rect.centery = self.rect.centery
+            self.tela.display.blit(self.vento, self.vento_rect)
         
     def update(self):
-      tecla = pygame.key.get_pressed()
-      moveu = False
+        tecla = pygame.key.get_pressed()
+        moveu = False
+        
+        # Animação da nave
+        self.contador += 1
+        if self.contador >= self.tempo_animacao:
+            self.contador = 0
+            self.indice = (self.indice + 1) % len(self.frames)
+            self.image = self.frames[self.indice]
+        
+        if tecla[pygame.K_RIGHT] or tecla[pygame.K_d]:
+            if self.rect.right < self.tela.largura:
+                self.rect.right += 5
+                self.subindo = False
+                moveu = True
 
-      # Animação
-      self.contador += 1
-      if self.contador >= self.tempo_animacao:
-        self.contador = 0
-        self.indice = (self.indice + 1) % len(self.frames)
-        self.image = self.frames[self.indice]
-    
+        if tecla[pygame.K_LEFT] or tecla[pygame.K_a]:
+            if self.rect.left > 0:
+                self.rect.left -= 5
+                self.subindo = False
+                moveu = True
+        
+        if tecla[pygame.K_UP] or tecla[pygame.K_w]:
+            if self.rect.top > 0:
+                self.rect.top -= 2
+                self.subindo = True
+                moveu = True
 
-      if tecla[pygame.K_RIGHT] or tecla[pygame.K_d]:
-        if self.rect.right < self.tela.largura:
-           self.rect.right += 5
-           self.__subindo = False
-           moveu = True
-
-      if tecla[pygame.K_LEFT] or tecla[pygame.K_a]:
-        if self.rect.left > 0:
-           self.rect.left -= 5
-           self.__subindo = False
-           moveu = True
-    
-      if tecla[pygame.K_UP] or tecla[pygame.K_w]:
-        if self.rect.top > 0 :
-           self.rect.top -= 2
-           self.__subindo = True
-           moveu = True
-
-      if tecla[pygame.K_DOWN] or tecla[pygame.K_s]:
-        if self.rect.bottom < self.tela.altura:
-           self.rect.bottom += 5
-           self.__subindo = False
-           moveu = True
-      
-      if not moveu:
-        if self.rect.bottom < self.tela.altura:
-           self.rect.bottom += 1
-           self.__subindo = False
-
-           
-      
+        if tecla[pygame.K_DOWN] or tecla[pygame.K_s]:
+            if self.rect.bottom < self.tela.altura:
+                self.rect.bottom += 5
+                self.subindo = False
+                moveu = True
+        
+        # Queda lenta se não se moveu para baixo
+        if not moveu:
+            if self.rect.bottom < self.tela.altura:
+                self.rect.bottom += 1
+                self.subindo = False

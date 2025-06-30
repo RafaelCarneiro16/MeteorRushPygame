@@ -1,24 +1,37 @@
 import pygame 
 import random
 from tela import Tela
+from inimigo import Inimigo
 
-class Meteoro(pygame.sprite.Sprite):
+class Meteoro(Inimigo):
     def __init__(self, x, grupo):
         super().__init__(grupo)
-        self.original_image = pygame.image.load(rf"imagens\meteoro2.png").convert_alpha()
-        tamanho_imagem = random.uniform(0.8, 1.3) 
-        self.__image = pygame.transform.rotozoom(self.original_image, random.randint(0, 360), tamanho_imagem)
+
+        self.__original_image = pygame.image.load(rf"C:\GitHub\Jogo\imagens\meteoro2.png").convert_alpha()
+        self.__tamanho_imagem = random.uniform(0.8, 1.3) 
+        self.__image = pygame.transform.rotozoom(self.original_image, random.randint(0, 360), self.tamanho_imagem)
         self.__rect = self.__image.get_rect(center = (x, -50))
         self.__direcao = random.randint(-2,2)
-      
-        # Pontuação temporária
-        if tamanho_imagem < 0.95:
-            self.__pontos = 100  
-        elif tamanho_imagem < 1.15:
-            self.__pontos = 50 
+        self.__pontos = 0
+
+        #region Pontuação 
+        if self.tamanho_imagem < 0.95:
+            self.pontos = 100  
+        elif self.tamanho_imagem < 1.15:
+            self.pontos = 50 
         else:
-            self.__pontos = 20 
+            self.pontos = 20 
+        #endregion
+      
+    #region Setters e Getters
+    @property
+    def original_image(self):
+        return self.__original_image
     
+    @original_image.setter
+    def original_image(self, nova):
+        self.__original_image = nova
+
     @property
     def image(self):
         return self.__image
@@ -43,10 +56,29 @@ class Meteoro(pygame.sprite.Sprite):
     def pontos(self, nova):
         self.__pontos = nova
 
+    @property
+    def direcao(self):
+        return self.__direcao
+    
+    @direcao.setter
+    def direcao(self, valor):
+        self.__direcao = valor
+    
+    @property
+    def tamanho_imagem(self):
+        return self.__tamanho_imagem
+    
+    @tamanho_imagem.setter
+    def tamanho_imagem(self, valor):
+        self.__tamanho_imagem = valor
+    #endregion
+
     def update(self):
-        self.__rect.x += self.__direcao
-        self.__rect.y += 4
-        if self.__rect.top > 600 or self.__rect.left > 800 or self.__rect.right < 0 :
+        self.rect.x += self.direcao
+        self.rect.y += 4
+        if self.rect.top > 600 or self.rect.left > 800 or self.rect.right < 0 :
             self.kill()
+
+    
           
          

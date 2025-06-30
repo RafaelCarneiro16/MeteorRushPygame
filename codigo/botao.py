@@ -1,19 +1,31 @@
 import pygame
+import os
 
 class Botao(pygame.sprite.Sprite):
-    def __init__(self, grupo, caminho_imagem, posicao : tuple):
+    def __init__(self, grupo, imagem, posicao: tuple):
         super().__init__(grupo)
-        self.__posicao = posicao
-        self.__image = pygame.image.load(rf'{caminho_imagem}').convert_alpha()
-        self.__rect = self.__image.get_rect(center = (self.posicao))
+        try:
+            self.__posicao = posicao
+            try:
+                self.__image = pygame.image.load(os.path.join('imagens', f'{imagem}')).convert_alpha()
+            except pygame.error as erro_img:
+                print(f"⚠️ [BOTAO] Erro ao carregar imagem: {erro_img}")
+                self.__image = None
+            if self.__image:
+                self.__rect = self.__image.get_rect(center=self.posicao)
+            else:
+                self.__rect = pygame.Rect(self.posicao[0], self.posicao[1], 0, 0)
+        except Exception as erro:
+            print(f"⚠️ [BOTAO] Erro no construtor: {erro}")
 
+    #region Setters e Getters
     @property
     def image(self):
         return self.__image
     
     @image.setter
     def image(self, nova_imagem):
-        self.__image =  nova_imagem
+        self.__image = nova_imagem
 
     @property
     def rect(self):
@@ -21,7 +33,7 @@ class Botao(pygame.sprite.Sprite):
     
     @rect.setter
     def rect(self, novo):
-        self.__rect =  novo
+        self.__rect = novo
 
     @property
     def posicao(self):
@@ -29,5 +41,6 @@ class Botao(pygame.sprite.Sprite):
     
     @posicao.setter
     def posicao(self, nova_posicao):
-        self.__posicao =  nova_posicao
+        self.__posicao = nova_posicao
 
+    #endregion

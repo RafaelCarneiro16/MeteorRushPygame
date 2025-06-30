@@ -1,14 +1,26 @@
 import pygame
+import os
 
 class Vidas(pygame.sprite.Sprite):
-    def __init__(self, grupo, posx = int):
+    def __init__(self, grupo, posx=int):
         super().__init__(grupo)
-        self.__imagem_vida = pygame.image.load(rf'C:\GitHub\Jogo\imagens\vida.png').convert_alpha()
-        self.__imagem_vida = pygame.transform.scale(self.__imagem_vida, (50, 50))
-        self.__imagem_vidaperdida = pygame.image.load(rf'C:\GitHub\Jogo\imagens\vida_perdida.png').convert_alpha()
-        self.__imagem_vidaperdida = pygame.transform.scale(self.__imagem_vidaperdida, (50, 50))
-        self.__image = self.__imagem_vida
-        self.__rect = self.__image.get_rect(topright = (posx, 0))
+        try:
+            self.__imagem_vida = pygame.image.load(os.path.join('imagens', 'vida.png')).convert_alpha()
+            self.__imagem_vida = pygame.transform.scale(self.imagem_vida, (50, 50))
+        except pygame.error as erro:
+            print(f"⚠️ [VIDAS] Falha ao carregar a imagem de vida: {erro}")
+
+        self.__image = self.imagem_vida
+        self.__rect = self.image.get_rect(topright=(posx, 0))
+
+    # region Setters e Getters
+    @property
+    def imagem_vida(self):
+        return self.__imagem_vida
+    
+    @imagem_vida.setter
+    def imagem_vida(self, novo):
+        self.__imagem_vida = novo
 
     @property
     def image(self):
@@ -25,21 +37,4 @@ class Vidas(pygame.sprite.Sprite):
     @rect.setter
     def rect(self, novo):
         self.__rect = novo
-
-    @property
-    def imagem_vidaperdida(self):
-        return self.__imagem_vidaperdida
-
-    @imagem_vidaperdida.setter
-    def imagem_vidaperdida(self, value):
-        self.__imagem_vidaperdida = value   
-        
-
-    def perder_vida(self):
-        self.image = self.imagem_vidaperdida
-        
-    
-        
-    
-
-    
+    # endregion

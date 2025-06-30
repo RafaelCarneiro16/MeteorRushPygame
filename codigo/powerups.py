@@ -1,5 +1,6 @@
 import pygame
 from texto import Texto
+import os
 
 class PowerUp(pygame.sprite.Sprite):
     def __init__(self, tipo, grupo, posicao, tela, jogador): 
@@ -7,10 +8,15 @@ class PowerUp(pygame.sprite.Sprite):
         self.__tipo = tipo
         self.__tela = tela
         self.__jogador = jogador
+        try:
+            power_up_imagem = pygame.image.load(os.path.join("imagens", "power_up.png")).convert_alpha()
+        except pygame.error as erro:
+                    print(f"⚠️ [POWERUP] Falha ao carregar imagem power_up: {erro}")
+        try:
+            escudo_imagem = pygame.image.load(os.path.join("imagens", "escudo.png")).convert_alpha()
+        except pygame.error as erro:
+                    print(f"⚠️ [POWERUP] Falha ao carregar imagem escudo: {erro}")    
 
-        power_up_imagem = pygame.image.load(r'C:\GitHub\Jogo\imagens\power_up.png').convert_alpha() 
-        escudo_imagem = pygame.image.load(r'C:\GitHub\Jogo\imagens\escudo.png').convert_alpha()
-        
         if tipo == 'power_up':
             self.__image = power_up_imagem
             self.__rect = self.image.get_rect(center=posicao)
@@ -29,7 +35,7 @@ class PowerUp(pygame.sprite.Sprite):
             self.__image.fill((0, 0, 0, 0))
             self.__rect = self.image.get_rect(center=(-100, -100))
 
-    
+    #region Setters e Getters
     @property
     def tipo(self):
         return self.__tipo
@@ -85,6 +91,8 @@ class PowerUp(pygame.sprite.Sprite):
     @duracao.setter
     def duracao(self, value):
         self.__duracao = value
+
+    #endregion
 
     def update(self): 
         if self.tipo == 'power_up':
