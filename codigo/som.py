@@ -46,6 +46,7 @@ class Som():
     @volume_efeitos.setter
     def volume_efeitos(self, valor):
         self.__volume_efeitos = max(0.0, min(1.0, valor))
+        self.atualizar_volumes
 
     @property
     def volume_musica(self):
@@ -54,10 +55,7 @@ class Som():
     @volume_musica.setter
     def volume_musica(self, valor):
         self.__volume_musica = max(0.0, min(1.0, valor))
-        try:
-            pygame.mixer.music.set_volume(self.__volume_musica)
-        except pygame.error as erro:
-            print(f"⚠️ [SOM] Erro pygame: {erro}")
+        self.atualizar_volumes
 
     @property
     def largura_barra_volume(self):
@@ -144,7 +142,7 @@ class Som():
         try:
             efeito = pygame.mixer.Sound(os.path.join('sons', f'{som}'))
             if volume is None:
-                volume = self.__volume_efeitos
+                volume = self.__volume_efeitos * self.__volume_geral
             efeito.set_volume(volume)
             efeito.play()
         except pygame.error as erro:

@@ -18,7 +18,7 @@ from gerenciador_progresso import GerenciadorProgresso
 import os
 
 class Jogo():
-    def __init__(self):
+    def __init__(self, som):
         self.__tela = Tela(800, 600, 'fundo.png')
         self.__grupo_jogador = pygame.sprite.GroupSingle()
         self.__jogador = Jogador(self.__grupo_jogador, self.__tela)
@@ -26,7 +26,7 @@ class Jogo():
         self.__grupo_meteoros = pygame.sprite.Group()
         self.__grupo_tiros = pygame.sprite.Group()
         self.__clock = pygame.time.Clock()
-        self.__som = Som()
+        self.__som = som
         self.__grupo_meteoros_dourados = pygame.sprite.Group()
         self.__ranking = GerenciadorRanking()
         self.__ranking.carregar_de_arquivo("ranking.json")
@@ -262,6 +262,7 @@ class Jogo():
 
         rodando = True
         self.som.tocar_musica("musica_jogo.wav")
+        self.som.atualizar_volumes()
 
         while rodando:
             self.testes_evento(evento_meteoro, evento_meteoro_dourado)

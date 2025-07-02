@@ -1,11 +1,13 @@
 import pygame
 from jogo import Jogo
 from menu import Menu
+from som import Som
 
 pygame.init()
 
-jogo = Jogo()
-menu = Menu(jogo)
+som = Som()
+jogo = Jogo(som)
+menu = Menu(jogo,som)
 
 while True:
     menu.rodando_menu()

@@ -35,6 +35,7 @@ class Ovni(Inimigo):
         except pygame.error as erro:
             print(f"⚠️ [OVNI] Falha ao carregar nova imagem do OVNI: {erro}")
 
+
     @property
     def rect(self):
         return self.__rect
@@ -146,7 +147,7 @@ class Ovni(Inimigo):
 
     def seguir_jogador(self):
         diferenca = self.jogador.rect.centerx - self.rect.centerx
-        if abs(diferenca) > 1:
+        if abs(diferenca) > 3:
            self.rect.x += self.velocidade_x if diferenca > 0 else -self.velocidade_x
 
     def levar_dano(self):

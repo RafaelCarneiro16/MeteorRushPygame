@@ -12,12 +12,14 @@ from vidas import Vidas
 import os
 
 class Menu():
-    def __init__(self, jogo: Jogo):
+    def __init__(self, jogo: Jogo, som):
         self.__clock = pygame.time.Clock()
         self.__tela = Tela(800, 600, 'fundo2.png')
         self.__jogo = jogo
+        self.__som = som
         self.__grupo_botoes = pygame.sprite.Group()
         self.__gerenciador_progresso = GerenciadorProgresso()
+        
         try:
             self.__logo_jogo = pygame.image.load(os.path.join('imagens', 'icone_nome_jogo.png')).convert_alpha()
         except pygame.error as erro:
