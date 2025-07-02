@@ -26,7 +26,6 @@ class Menu():
             print(f"⚠️ [MENU] Falha ao carregar a imagem do logo: {erro}")
             self.__logo_jogo = pygame.Surface((200, 100), pygame.SRCALPHA)
         self.__logo_rect = self.logo_jogo.get_rect(center = (400, 125))
-        self.__som = Som()
         self.__ranking = GerenciadorRanking()
         self.__ranking.carregar_de_arquivo("ranking.json")
 

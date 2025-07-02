@@ -46,7 +46,7 @@ class Som():
     @volume_efeitos.setter
     def volume_efeitos(self, valor):
         self.__volume_efeitos = max(0.0, min(1.0, valor))
-        self.atualizar_volumes
+        self.atualizar_volumes()
 
     @property
     def volume_musica(self):
@@ -55,7 +55,7 @@ class Som():
     @volume_musica.setter
     def volume_musica(self, valor):
         self.__volume_musica = max(0.0, min(1.0, valor))
-        self.atualizar_volumes
+        self.atualizar_volumes()
 
     @property
     def largura_barra_volume(self):

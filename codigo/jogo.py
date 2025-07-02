@@ -261,8 +261,9 @@ class Jogo():
         pygame.time.set_timer(self.evento_ovni, 1000, loops=1)
 
         rodando = True
-        self.som.tocar_musica("musica_jogo.wav")
         self.som.atualizar_volumes()
+        self.som.tocar_musica("musica_jogo.wav")
+        
 
         while rodando:
             self.testes_evento(evento_meteoro, evento_meteoro_dourado)
