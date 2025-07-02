@@ -2,12 +2,13 @@ import pygame
 import random
 from tela import Tela
 from inimigo import Inimigo
+import os
 
 class Meteoro(Inimigo):
     def __init__(self, x, grupo):
         super().__init__(grupo)
 
-        self.__original_image = pygame.image.load(rf"C:\GitHub\Jogo\imagens\meteoro2.png").convert_alpha()
+        self.__original_image = pygame.image.load(os.path.join('imagens', 'meteoro2.png')).convert_alpha()
         self.__tamanho_imagem = random.uniform(0.8, 1.3) 
         self.__image = pygame.transform.rotozoom(self.original_image, random.randint(0, 360), self.tamanho_imagem)
         self.__rect = self.__image.get_rect(center = (x, -50))

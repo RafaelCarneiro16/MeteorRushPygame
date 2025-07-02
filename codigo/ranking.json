@@ -1,3 +1,14 @@
 [
-
+    {
+        "nome": "teste",
+        "pontuacao": 6570
+    },
+    {
+        "nome": "  teste",
+        "pontuacao": 5580
+    },
+    {
+        "nome": "nome2",
+        "pontuacao": 2040
+    }
 ]

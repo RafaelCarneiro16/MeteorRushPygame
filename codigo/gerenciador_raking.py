@@ -68,7 +68,7 @@ class GerenciadorRanking:
 
     def solicitar_nome(self, tela, clock, botao: Botao) -> str:
         nome = ""
-        fonte = pygame.font.Font(r"C:\GitHub\Jogo\fonte.ttf", 32)
+        fonte = pygame.font.Font(os.path.join('fonte.ttf'), 32)
         rodando = True
 
         while rodando:
@@ -104,7 +104,7 @@ class GerenciadorRanking:
 
     def exibir_ranking(self, tela, clock):
         rodando = True
-        fonte = pygame.font.Font(r'C:\GitHub\Jogo\fonte.ttf', 32)
+        fonte = pygame.font.Font(os.path.join('fonte.ttf'), 32)
 
         while rodando:
             for evento in pygame.event.get():

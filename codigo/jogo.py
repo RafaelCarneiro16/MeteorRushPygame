@@ -402,7 +402,7 @@ class Jogo():
         for tiros, meteoros_acertados in colisao.items():
             for meteoro in meteoros_acertados:
                 pontuacao += meteoro.pontos
-                self.som.tocar_efeitos(r"C:\GitHub\Jogo\sons\explosion.wav")
+                self.som.tocar_efeitos("explosion.wav")
                 Explosao(self.grupo_explosoes, self.tela, meteoro.rect.center)
                 if power_up and random.random() <= 0.3:
                       PowerUp('power_up', self.grupo_powerup, meteoro.rect.center, self.tela, self.jogador)
