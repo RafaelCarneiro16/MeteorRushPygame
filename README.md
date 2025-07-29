@@ -1,7 +1,7 @@
 # 🎮 Projeto Programação Orientada a Objetos (POO)
 
 Este projeto é um jogo desenvolvido com base nos princípios de **Programação Orientada a Objetos (POO)**, com o objetivo de aplicar e consolidar os conceitos estudados em sala de aula.
-O jogo foi construído em [linguagem utilizada, ex: Python com Pygame] e segue uma estrutura modular e reutilizável, respeitando os pilares fundamentais da POO.
+O jogo foi construído em Python com Pygame e segue uma estrutura modular e reutilizável, respeitando os pilares fundamentais da POO.
 
 ## 📚 Objetivos do Projeto
 
